@@ -1,12 +1,10 @@
 ﻿using Purchase.Model;
 using Purchase.UI.Data;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace Purchase.UI.ViewModel
 {
-    public class MainViewModel: INotifyPropertyChanged
+    public class MainViewModel: ViewModelBase
     {
         private ISupplierDataService _supplierDataService;
         private Supplier _selectedSupplier;
@@ -30,8 +28,6 @@ namespace Purchase.UI.ViewModel
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public Supplier SelectedSupplier
         {
             get { return _selectedSupplier; }
@@ -42,10 +38,7 @@ namespace Purchase.UI.ViewModel
             }
         }
 
-        private void OnpropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
     }
+
+    
 }
