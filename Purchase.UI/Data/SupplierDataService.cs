@@ -2,7 +2,9 @@
 using Purchase.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Purchase.UI.Data
 {
@@ -15,7 +17,7 @@ namespace Purchase.UI.Data
             _contextCreator = contextCreator;
         }
 
-        public IEnumerable<Supplier> GetAll()
+        public async Task<List<Supplier>> GetAllAsync()
         {
             //yield return new Supplier { Name = "Irmãos Valente", Code = "IRV" };
             //yield return new Supplier { Name = "Acebron", Code = "ACE" };
@@ -26,7 +28,7 @@ namespace Purchase.UI.Data
 
             using (var ctx = _contextCreator())
             {
-                return ctx.Suppliers.AsNoTracking().ToList();
+                return  await ctx.Suppliers.AsNoTracking().ToListAsync();
             }
 
         }

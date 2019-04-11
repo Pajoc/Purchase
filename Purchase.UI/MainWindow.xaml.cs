@@ -1,5 +1,6 @@
 ﻿using Purchase.UI.ViewModel;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace Purchase.UI
@@ -14,12 +15,12 @@ namespace Purchase.UI
             InitializeComponent();
             _viewModel = viewModel;
             DataContext = _viewModel;
-            Loaded += MainWindow_Loaded;
+            Loaded += MainWindow_LoadedAsync;
         }
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void MainWindow_LoadedAsync(object sender, RoutedEventArgs e)
         {
-            _viewModel.Load();
+            await _viewModel.LoadAsync();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Purchase.Model;
 using Purchase.UI.Data;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Purchase.UI.ViewModel
 {
@@ -18,9 +19,9 @@ namespace Purchase.UI.ViewModel
         //usado para notificar o DBinding k a collection mudou
         public ObservableCollection<Supplier> Suppliers { get; set; }
 
-        public void Load()
+        public async Task LoadAsync()
         {
-            var suppliers = _supplierDataService.GetAll();
+            var suppliers = await _supplierDataService.GetAllAsync();
             Suppliers.Clear();
             foreach (var supplier in suppliers)
             {
