@@ -8,6 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <ListView Grid.Column="0" ItemsSource="{Binding Suppliers}"
+                  SelectedItem="{Binding SelectedSupplier,Mode=TwoWay}"
                   DisplayMemberPath="DisplayMember"/>
     </Grid>
 </UserControl>

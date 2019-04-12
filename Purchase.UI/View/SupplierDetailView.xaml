@@ -7,6 +7,26 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <!-- Fica com  altura do elemento mais alto-->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Content="Code" Margin="10 10 10 0"/>
+        <TextBox Grid.Row="1" Text="{Binding Supplier.Code, Mode=TwoWay,
+                UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 10"/>
+
+        <Label Grid.Row="2" Content="Company name" Margin="10 0"/>
+        <TextBox Grid.Row="3" Text="{Binding Supplier.Name, Mode=TwoWay,
+                UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 10"/>
+
+        <Label Grid.Row="4" Content="Email" Margin="10 0"/>
+        <TextBox Grid.Row="5" Text="{Binding Supplier.MainEmail, Mode=TwoWay,
+                UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 10"/>
     </Grid>
 </UserControl>

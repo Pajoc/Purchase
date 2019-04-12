@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Prism.Events;
 using Purchase.DataAccess;
 using Purchase.UI.Data;
 using Purchase.UI.ViewModel;
@@ -10,6 +11,8 @@ namespace Purchase.UI.Startup
         public IContainer Bootstrap()
         {
             var builder = new ContainerBuilder();
+
+            builder.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
 
             builder.RegisterType<MainWindow>().AsSelf();
             builder.RegisterType<MainViewModel>().AsSelf();
