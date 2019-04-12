@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Purchase.UI.Data
 {
-    public class LookupDataService
+    public class LookupDataService : ILookupSupplierDataService
     {
         private Func<PurchaseDbContext> _contextCreator;
 
@@ -18,11 +18,11 @@ namespace Purchase.UI.Data
             _contextCreator = contextCreator;
         }
 
-        public Task<List<LookupSupplier>> GetSupplierLookupAsync()
+        public async Task<List<LookupSupplier>> GetSupplierLookupAsync()
         {
             using (var ctx = _contextCreator())
             {
-                return  ctx.Suppliers.AsNoTracking().Select(s => new LookupSupplier
+                return  await ctx.Suppliers.AsNoTracking().Select(s => new LookupSupplier
                 {
                     Id = s.Id,
                     DisplayMember = s.Name

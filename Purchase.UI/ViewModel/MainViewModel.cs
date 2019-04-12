@@ -7,39 +7,21 @@ namespace Purchase.UI.ViewModel
 {
     public class MainViewModel: ViewModelBase
     {
-        private ISupplierDataService _supplierDataService;
-        private Supplier _selectedSupplier;
 
-        public MainViewModel(ISupplierDataService supplierDataService )
+        public MainViewModel(INavigationViewModel navigationViewModel, ISupplierDetailViewModel supplierDetailViewModel)
         {
-            Suppliers = new ObservableCollection<Supplier>();
-            _supplierDataService = supplierDataService;
+            NavigationViewModel = navigationViewModel;
+            SupplierDetailViewModel = supplierDetailViewModel;
         }
-
-        //usado para notificar o DBinding k a collection mudou
-        public ObservableCollection<Supplier> Suppliers { get; set; }
 
         public async Task LoadAsync()
         {
-            var suppliers = await _supplierDataService.GetAllAsync();
-            Suppliers.Clear();
-            foreach (var supplier in suppliers)
-            {
-                Suppliers.Add(supplier);
-            }
+            await NavigationViewModel.LoadAsync();
         }
 
-        public Supplier SelectedSupplier
-        {
-            get { return _selectedSupplier; }
-            set {
-                _selectedSupplier = value;
-                //OnpropertyChanged("SelectedSupplier");
-                OnpropertyChanged();
-            }
-        }
-
+        //Os set são colocados diretamente no construtor
+        public INavigationViewModel NavigationViewModel { get; }
+        public ISupplierDetailViewModel SupplierDetailViewModel { get; }
     }
-
-    
+   
 }

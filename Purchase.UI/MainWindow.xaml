@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Purchase.UI"
+        xmlns:view="clr-namespace:Purchase.UI.View"
         mc:Ignorable="d"
         Title="Purchase project" Height="350" Width="525" FontSize="20">
     <Grid>
@@ -11,9 +12,8 @@
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <ListView Grid.Column="0" ItemsSource="{Binding Suppliers}"
-                  SelectedItem="{Binding SelectedSupplier, Mode=TwoWay}"
-                  DisplayMemberPath="Name"/>
+        <view:NavigationView DataContext="{Binding NavigationViewModel}"/>
+       
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <!-- Fica com  altura do elemento mais alto-->

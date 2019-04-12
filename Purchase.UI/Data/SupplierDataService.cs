@@ -17,7 +17,7 @@ namespace Purchase.UI.Data
             _contextCreator = contextCreator;
         }
 
-        public async Task<List<Supplier>> GetAllAsync()
+        public async Task<Supplier> GetByIdAsync(int ID)
         {
             //yield return new Supplier { Name = "Irmãos Valente", Code = "IRV" };
             //yield return new Supplier { Name = "Acebron", Code = "ACE" };
@@ -28,8 +28,7 @@ namespace Purchase.UI.Data
 
             using (var ctx = _contextCreator())
             {
-                return  await ctx.Suppliers.AsNoTracking().ToListAsync();
-            }
+                return await ctx.Suppliers.SingleAsync(s => s.Id == ID);            }
 
         }
     }

@@ -4,8 +4,8 @@ using Purchase.Model;
 
 namespace Purchase.UI.Data
 {
-    public interface ISupplierDataService
+    public interface ILookupSupplierDataService
     {
-        Task<Supplier> GetByIdAsync(int ID);
+        Task<List<LookupSupplier>> GetSupplierLookupAsync();
     }
 }
