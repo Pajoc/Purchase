@@ -28,8 +28,19 @@ namespace Purchase.UI.Data
 
             using (var ctx = _contextCreator())
             {
-                return await ctx.Suppliers.SingleAsync(s => s.Id == ID);            }
+                return await ctx.Suppliers.SingleAsync(s => s.Id == ID);
+            }
 
+        }
+
+        public async Task SaveAsync(Supplier supplier)
+        {
+            using (var ctx = _contextCreator())
+            {
+                ctx.Suppliers.Attach(supplier);
+                ctx.Entry(supplier).State = EntityState.Modified;
+                await ctx.SaveChangesAsync();
+            }
         }
     }
 }

@@ -7,5 +7,6 @@ namespace Purchase.UI.Data
     public interface ISupplierDataService
     {
         Task<Supplier> GetByIdAsync(int ID);
+        Task SaveAsync(Supplier supplier);
     }
 }

@@ -70,11 +70,13 @@
     </ApplicationDefinition>
     <Compile Include="Data\ILookupSupplierDataService.cs" />
     <Compile Include="Data\LookupDataService.cs" />
+    <Compile Include="Event\AfterSupplierSavedEvent.cs" />
     <Compile Include="Event\OpenSupplierDtlViewEvent.cs" />
     <Compile Include="Startup\Bootstrapper.cs" />
     <Compile Include="ViewModel\INavigationViewModel.cs" />
     <Compile Include="ViewModel\ISupplierDetailViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\NavigationItemViewModel.cs" />
     <Compile Include="ViewModel\NavigationViewModel.cs" />
     <Compile Include="ViewModel\SupplierDetailViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="View\SupplierDetailView.xaml.cs">
       <DependentUpon>SupplierDetailView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Wrapper\SupplierWrapper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

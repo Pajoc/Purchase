@@ -3,6 +3,7 @@ using Prism.Events;
 using Purchase.Model;
 using Purchase.UI.Data;
 using Purchase.UI.Event;
+using Purchase.UI.Wrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Purchase.UI.ViewModel
     {
         private ISupplierDataService _supplierDataService;
         private IEventAggregator _eventAggregator;
-        private Supplier _supplier;
+        private SupplierWrapper _supplier;
 
         public SupplierDetailViewModel(ISupplierDataService supplierDataService, IEventAggregator eventAggregator)
         {
@@ -28,14 +29,7 @@ namespace Purchase.UI.ViewModel
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
         }
 
-        
-
-        private async void OnOpenSupplierDetailView(int SupplierId)
-        {
-            await LoadAsync(SupplierId);
-        }
-
-        public Supplier Supplier {
+        public SupplierWrapper Supplier {
             //Ao ativar o LoadAsync notifica a interface 
             get { return _supplier;  }
             private set
@@ -45,23 +39,39 @@ namespace Purchase.UI.ViewModel
             }
         }
 
-        private void OnSaveExecute()
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool OnSaveCanExecute()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task LoadAsync(int SupID)
         {
-            Supplier = await _supplierDataService.GetByIdAsync(SupID);
+
+            Supplier sup = await _supplierDataService.GetByIdAsync(SupID);
+
+            Supplier = new SupplierWrapper(sup);
+
         }
 
         public ICommand SaveCommand { get; }
 
-       
+        private async void OnOpenSupplierDetailView(int SupplierId)
+        {
+            await LoadAsync(SupplierId);
+        }
+
+        private async void OnSaveExecute()
+        {
+            await _supplierDataService.SaveAsync(Supplier.Model);
+            _eventAggregator.GetEvent<AfterSupplierSavedEvent>().Publish(
+                new AfterSupplierSavedEventArgs
+                {
+                    Id = _supplier.Id,
+                    DisplayMember = _supplier.Name
+                }
+           );
+        }
+
+        private bool OnSaveCanExecute()
+        {
+            return true;
+
+        }
+
     }
 }

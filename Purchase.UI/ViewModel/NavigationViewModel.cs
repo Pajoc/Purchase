@@ -20,7 +20,14 @@ namespace Purchase.UI.ViewModel
         {
             _supplierLookUpDServ = supplierLookUpDServ;
             _eventAggregator = eventAggregator;
-            Suppliers = new ObservableCollection<LookupSupplier>();
+            Suppliers = new ObservableCollection<NavigationItemViewModel>();
+            eventAggregator.GetEvent<AfterSupplierSavedEvent>().Subscribe(AfterSupplierSaved);
+        }
+
+        private void AfterSupplierSaved(AfterSupplierSavedEventArgs supplier)
+        {
+            var lookupItem = Suppliers.Single(l => l.Id == supplier.Id);
+            lookupItem.DisplayMember = supplier.DisplayMember;
         }
 
         public async Task LoadAsync()
@@ -29,15 +36,16 @@ namespace Purchase.UI.ViewModel
             Suppliers.Clear();
             foreach (var supplier in lookUp)
             {
-                Suppliers.Add(supplier);
+                //Suppliers.Add(supplier);
+                Suppliers.Add(new NavigationItemViewModel(supplier.Id,supplier.DisplayMember));
             }
         }
 
-        public ObservableCollection<LookupSupplier> Suppliers { get; }
+        public ObservableCollection<NavigationItemViewModel> Suppliers { get; }
 
-        private LookupSupplier _selectedSupplier;
+        private NavigationItemViewModel _selectedSupplier;
 
-        public LookupSupplier SelectedSupplier
+        public NavigationItemViewModel SelectedSupplier
         {
             get { return _selectedSupplier; }
             set { _selectedSupplier = value;
