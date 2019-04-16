@@ -42,7 +42,11 @@ namespace Purchase.UI.Wrapper
         private Dictionary<string, List<string>> _errorsByPropertyName = new Dictionary<string, List<string>>();
 
         public bool HasErrors => _errorsByPropertyName.Any();
-        
+
+        //public bool HasErrors()
+        //{
+        //    return _errorsByPropertyName.Any();
+        //}
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
@@ -54,6 +58,29 @@ namespace Purchase.UI.Wrapper
         private void OnErrorsChanged(string propertyName)
         {
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+
+        private void AddError(string propertyName, string error)
+        {
+            if(!_errorsByPropertyName.ContainsKey(propertyName))
+            {
+                _errorsByPropertyName[propertyName] = new List<string>();
+            }
+
+            if (!_errorsByPropertyName[propertyName].Contains(error))
+            {
+                _errorsByPropertyName[propertyName].Add(error);
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        private void ClearErrors(string propertyName)
+        {
+            if (_errorsByPropertyName.ContainsKey(propertyName))
+            {
+                _errorsByPropertyName.Remove(propertyName);
+                OnErrorsChanged(propertyName);
+            }
         }
     }
 }
