@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Purchase.UI.Wrapper
 {
-    public class SupplierWrapper : ViewModelBase,INotifyDataErrorInfo
+    public class SupplierWrapper : ViewModelBase, INotifyDataErrorInfo
     {
         public SupplierWrapper(Supplier model)
         {
@@ -26,10 +26,21 @@ namespace Purchase.UI.Wrapper
             {
                 Model.Name = value;
                 OnpropertyChanged();
+                ValidateProperty(nameof(Name));
             }
         }
 
-        public string Email
+        public string Code
+        {
+            get { return Model.Code; }
+            set
+            {
+                Model.Code = value;
+                OnpropertyChanged();
+            }
+        }
+
+        public string MainEmail
         {
             get { return Model.MainEmail; }
             set
@@ -38,6 +49,23 @@ namespace Purchase.UI.Wrapper
                 OnpropertyChanged();
             }
         }
+
+        private void ValidateProperty(string propertyName)
+        {
+            ClearErrors(propertyName);
+            switch (propertyName)
+            {
+                case nameof(Name):
+                    if(string.Equals(Name,"Beaudrey",StringComparison.OrdinalIgnoreCase))
+                    {
+                        AddError(propertyName, "Can't add self company");
+                    }
+                    break;
+                   
+            }
+        }
+
+       
 
         private Dictionary<string, List<string>> _errorsByPropertyName = new Dictionary<string, List<string>>();
 
@@ -62,7 +90,7 @@ namespace Purchase.UI.Wrapper
 
         private void AddError(string propertyName, string error)
         {
-            if(!_errorsByPropertyName.ContainsKey(propertyName))
+            if (!_errorsByPropertyName.ContainsKey(propertyName))
             {
                 _errorsByPropertyName[propertyName] = new List<string>();
             }
