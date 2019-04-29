@@ -86,6 +86,7 @@
     <Compile Include="View\SupplierDetailView.xaml.cs">
       <DependentUpon>SupplierDetailView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Wrapper\ModelWrapper.cs" />
     <Compile Include="Wrapper\NotifyDataErrorInfoBase.cs" />
     <Compile Include="Wrapper\SupplierWrapper.cs" />
     <Page Include="MainWindow.xaml">

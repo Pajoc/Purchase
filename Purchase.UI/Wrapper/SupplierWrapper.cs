@@ -1,18 +1,9 @@
 ﻿using Purchase.Model;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Purchase.UI.Wrapper
 {
-
-    public class ModelWrapper<T> : NotifyDataErrorInfoBase
-    {
-        public ModelWrapper(T model)
-        {
-            Model = model;
-        }
-
-        public T Model { get; }
-    }
 
     public class SupplierWrapper : ModelWrapper<Supplier>
     {
@@ -25,32 +16,35 @@ namespace Purchase.UI.Wrapper
 
         public string Name
         {
-            get { return Model.Name; }
+            //1º get { return Model.Name; }
+            //2º get { return GetValue<string>(nameof(Name)); }
+            get { return GetValue<string>(); }
+
             set
             {
-                Model.Name = value;
-                OnpropertyChanged();
+                //Model.Name = value;
+                SetValue(value);
                 ValidateProperty(nameof(Name));
             }
         }
 
+       
+
         public string Code
         {
-            get { return Model.Code; }
+            get { return GetValue<string>(); }
             set
             {
-                Model.Code = value;
-                OnpropertyChanged();
+                SetValue(value);
             }
         }
 
         public string MainEmail
         {
-            get { return Model.MainEmail; }
+            get { return GetValue<string>(); }
             set
             {
-                Model.MainEmail = value;
-                OnpropertyChanged();
+                SetValue(value);
             }
         }
 
