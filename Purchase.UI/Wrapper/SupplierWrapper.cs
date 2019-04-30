@@ -1,5 +1,6 @@
 ﻿using Purchase.Model;
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Purchase.UI.Wrapper
@@ -12,7 +13,7 @@ namespace Purchase.UI.Wrapper
 
         }
 
-        public int Id { get { return Model.Id; } }
+        public int Id { get { return GetValue<int>(); } }
 
         public string Name
         {
@@ -24,7 +25,7 @@ namespace Purchase.UI.Wrapper
             {
                 //Model.Name = value;
                 SetValue(value);
-                ValidateProperty(nameof(Name));
+                //ValidateProperty(nameof(Name));
             }
         }
 
@@ -48,21 +49,39 @@ namespace Purchase.UI.Wrapper
             }
         }
 
-        private void ValidateProperty(string propertyName)
+        //private void ValidateProperty(string propertyName)
+        //{
+        //    ClearErrors(propertyName);
+        //    switch (propertyName)
+        //    {
+        //        case nameof(Name):
+        //            if (string.Equals(Name, "Beaudrey", StringComparison.OrdinalIgnoreCase))
+        //            {
+        //                AddError(propertyName, "Can't add self company");
+        //            }
+        //            break;
+
+        //    }
+        //}
+
+        protected override IEnumerable<string> ValidateProperty(string propertyName)
         {
-            ClearErrors(propertyName);
             switch (propertyName)
             {
                 case nameof(Name):
                     if (string.Equals(Name, "Beaudrey", StringComparison.OrdinalIgnoreCase))
                     {
-                        AddError(propertyName, "Can't add self company");
+                        yield return "Can't add self company";
                     }
                     break;
-
+                case nameof(Code):
+                    if (string.Equals(Code, "BAS", StringComparison.OrdinalIgnoreCase))
+                    {
+                        yield return "Can't add delegations";
+                    }
+                    break;
             }
         }
-
     }
 
 }
