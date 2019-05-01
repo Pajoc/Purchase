@@ -14,6 +14,7 @@ namespace Purchase.Model
 
         public decimal Treshold { get; set; }
         [StringLength(50)]
+        [EmailAddress]
         public string MainEmail { get; set; }
 
 

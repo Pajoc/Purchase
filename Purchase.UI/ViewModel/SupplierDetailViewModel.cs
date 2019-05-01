@@ -42,10 +42,21 @@ namespace Purchase.UI.ViewModel
         public async Task LoadAsync(int SupID)
         {
 
-            Supplier sup = await _supplierDataService.GetByIdAsync(SupID);
+            var sup = await _supplierDataService.GetByIdAsync(SupID);
 
             Supplier = new SupplierWrapper(sup);
 
+            Supplier.PropertyChanged += (s, e) =>
+            {
+                //o HasErrors tem de ativar PropertyChanged ir ao NotifyDataErrorInfoBase->OnErrorsChanged
+                if (e.PropertyName == nameof(Supplier.HasErrors))
+                {
+                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+                }
+            };
+
+            //Faz com que volte a verificar OnSaveCanExecute
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
         }
 
         public ICommand SaveCommand { get; }
@@ -69,7 +80,8 @@ namespace Purchase.UI.ViewModel
 
         private bool OnSaveCanExecute()
         {
-            return true;
+            //temos de assegurar k é chamado
+            return Supplier!=null && !Supplier.HasErrors;
 
         }
 
