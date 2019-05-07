@@ -6,15 +6,15 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Purchase.UI.Data
+namespace Purchase.UI.Data.Repositories
 {
-    public class SupplierDataService : ISupplierDataService
+    public class SupplierRepository : ISupplierRepository
     {
-        private Func<PurchaseDbContext> _contextCreator;
+        private PurchaseDbContext _context;
 
-        public SupplierDataService(Func<PurchaseDbContext> contextCreator)
+        public SupplierRepository(PurchaseDbContext context)
         {
-            _contextCreator = contextCreator;
+            _context = context;
         }
 
         public async Task<Supplier> GetByIdAsync(int ID)
@@ -25,22 +25,13 @@ namespace Purchase.UI.Data
             //yield return new Supplier { Name = "Fedex", Code = "FEX" };
             //yield return new Supplier { Name = "Embal segur", Code = "EBS" };
 
-
-            using (var ctx = _contextCreator())
-            {
-                return await ctx.Suppliers.SingleAsync(s => s.Id == ID);
-            }
+            return await _context.Suppliers.SingleAsync(s => s.Id == ID);
 
         }
 
-        public async Task SaveAsync(Supplier supplier)
+        public async Task SaveAsync()
         {
-            using (var ctx = _contextCreator())
-            {
-                ctx.Suppliers.Attach(supplier);
-                ctx.Entry(supplier).State = EntityState.Modified;
-                await ctx.SaveChangesAsync();
-            }
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -2,6 +2,8 @@
 using Prism.Events;
 using Purchase.DataAccess;
 using Purchase.UI.Data;
+using Purchase.UI.Data.Loockups;
+using Purchase.UI.Data.Repositories;
 using Purchase.UI.ViewModel;
 
 namespace Purchase.UI.Startup
@@ -19,7 +21,7 @@ namespace Purchase.UI.Startup
             builder.RegisterType<NavigationViewModel>().As<INavigationViewModel>();
             builder.RegisterType<SupplierDetailViewModel>().As<ISupplierDetailViewModel>();
 
-            builder.RegisterType<SupplierDataService>().As<ISupplierDataService>();
+            builder.RegisterType<SupplierRepository>().As<ISupplierRepository>();
 
             builder.RegisterType<PurchaseDbContext>().AsSelf();
 

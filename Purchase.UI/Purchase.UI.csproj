@@ -68,8 +68,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Data\ILookupSupplierDataService.cs" />
-    <Compile Include="Data\LookupDataService.cs" />
+    <Compile Include="Data\Lookups\ILookupSupplierDataService.cs" />
+    <Compile Include="Data\Lookups\LookupDataService.cs" />
+    <Compile Include="Data\Repositories\ISupplierRepository.cs" />
+    <Compile Include="Data\Repositories\SupplierRepository.cs" />
     <Compile Include="Event\AfterSupplierSavedEvent.cs" />
     <Compile Include="Event\OpenSupplierDtlViewEvent.cs" />
     <Compile Include="Startup\Bootstrapper.cs" />
@@ -97,8 +99,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Data\ISupplierDataService.cs" />
-    <Compile Include="Data\SupplierDataService.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

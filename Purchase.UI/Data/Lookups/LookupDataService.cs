@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Purchase.UI.Data
+namespace Purchase.UI.Data.Loockups
 {
     public class LookupDataService : ILookupSupplierDataService
     {

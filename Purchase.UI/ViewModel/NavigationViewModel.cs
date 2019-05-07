@@ -1,6 +1,7 @@
 ﻿using Prism.Events;
 using Purchase.Model;
 using Purchase.UI.Data;
+using Purchase.UI.Data.Loockups;
 using Purchase.UI.Event;
 using System;
 using System.Collections.Generic;

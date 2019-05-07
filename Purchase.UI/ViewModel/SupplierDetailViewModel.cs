@@ -2,6 +2,7 @@
 using Prism.Events;
 using Purchase.Model;
 using Purchase.UI.Data;
+using Purchase.UI.Data.Repositories;
 using Purchase.UI.Event;
 using Purchase.UI.Wrapper;
 using System;
@@ -15,13 +16,13 @@ namespace Purchase.UI.ViewModel
 {
     public class SupplierDetailViewModel : ViewModelBase, ISupplierDetailViewModel
     {
-        private ISupplierDataService _supplierDataService;
+        private ISupplierRepository _supplierRepository;
         private IEventAggregator _eventAggregator;
         private SupplierWrapper _supplier;
 
-        public SupplierDetailViewModel(ISupplierDataService supplierDataService, IEventAggregator eventAggregator)
+        public SupplierDetailViewModel(ISupplierRepository supplierRepository, IEventAggregator eventAggregator)
         {
-            _supplierDataService = supplierDataService;
+            _supplierRepository = supplierRepository;
             _eventAggregator = eventAggregator;
            
            _eventAggregator.GetEvent<OpenSupplierDtlViewEvent>().Subscribe(OnOpenSupplierDetailView);
@@ -42,7 +43,7 @@ namespace Purchase.UI.ViewModel
         public async Task LoadAsync(int SupID)
         {
 
-            var sup = await _supplierDataService.GetByIdAsync(SupID);
+            var sup = await _supplierRepository.GetByIdAsync(SupID);
 
             Supplier = new SupplierWrapper(sup);
 
@@ -68,7 +69,7 @@ namespace Purchase.UI.ViewModel
 
         private async void OnSaveExecute()
         {
-            await _supplierDataService.SaveAsync(Supplier.Model);
+            await _supplierRepository.SaveAsync();
             _eventAggregator.GetEvent<AfterSupplierSavedEvent>().Publish(
                 new AfterSupplierSavedEventArgs
                 {
