@@ -19,14 +19,13 @@ namespace Purchase.UI.ViewModel
         private ISupplierRepository _supplierRepository;
         private IEventAggregator _eventAggregator;
         private SupplierWrapper _supplier;
+        private bool _hasChanges;
 
         public SupplierDetailViewModel(ISupplierRepository supplierRepository, IEventAggregator eventAggregator)
         {
             _supplierRepository = supplierRepository;
             _eventAggregator = eventAggregator;
            
-           //_eventAggregator.GetEvent<OpenSupplierDtlViewEvent>().Subscribe(OnOpenSupplierDetailView);
-
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
         }
 
@@ -40,6 +39,21 @@ namespace Purchase.UI.ViewModel
             }
         }
 
+        public bool HasChanges
+        {
+            get { return _hasChanges; }
+            set
+            {
+                if (_hasChanges != value)
+                {
+                    _hasChanges = value;
+                    OnpropertyChanged();
+                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+
         public async Task LoadAsync(int SupID)
         {
 
@@ -49,6 +63,12 @@ namespace Purchase.UI.ViewModel
 
             Supplier.PropertyChanged += (s, e) =>
             {
+
+                if (!HasChanges)
+                {
+                    HasChanges = _supplierRepository.HasChanges();
+                }
+
                 //o HasErrors tem de ativar PropertyChanged ir ao NotifyDataErrorInfoBase->OnErrorsChanged
                 if (e.PropertyName == nameof(Supplier.HasErrors))
                 {
@@ -62,14 +82,10 @@ namespace Purchase.UI.ViewModel
 
         public ICommand SaveCommand { get; }
 
-        //private async void OnOpenSupplierDetailView(int SupplierId)
-        //{
-        //    await LoadAsync(SupplierId);
-        //}
-
         private async void OnSaveExecute()
         {
             await _supplierRepository.SaveAsync();
+            HasChanges = _supplierRepository.HasChanges();
             _eventAggregator.GetEvent<AfterSupplierSavedEvent>().Publish(
                 new AfterSupplierSavedEventArgs
                 {
@@ -81,9 +97,7 @@ namespace Purchase.UI.ViewModel
 
         private bool OnSaveCanExecute()
         {
-            //temos de assegurar k é chamado
-            return Supplier!=null && !Supplier.HasErrors;
-
+            return Supplier!=null && !Supplier.HasErrors && HasChanges;
         }
 
     }

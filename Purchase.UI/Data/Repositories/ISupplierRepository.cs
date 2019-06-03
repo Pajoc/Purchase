@@ -7,5 +7,6 @@ namespace Purchase.UI.Data.Repositories
     {
         Task<Supplier> GetByIdAsync(int ID);
         Task SaveAsync();
+        bool HasChanges();
     }
 }

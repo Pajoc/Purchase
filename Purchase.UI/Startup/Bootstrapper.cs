@@ -4,6 +4,7 @@ using Purchase.DataAccess;
 using Purchase.UI.Data;
 using Purchase.UI.Data.Loockups;
 using Purchase.UI.Data.Repositories;
+using Purchase.UI.View.Services;
 using Purchase.UI.ViewModel;
 
 namespace Purchase.UI.Startup
@@ -17,6 +18,9 @@ namespace Purchase.UI.Startup
             builder.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
 
             builder.RegisterType<MainWindow>().AsSelf();
+
+            builder.RegisterType<MessageDialogService>().As<IMessageDialogService>();
+
             builder.RegisterType<MainViewModel>().AsSelf();
             builder.RegisterType<NavigationViewModel>().As<INavigationViewModel>();
             builder.RegisterType<SupplierDetailViewModel>().As<ISupplierDetailViewModel>();
