@@ -25,7 +25,7 @@ namespace Purchase.UI.ViewModel
             _supplierRepository = supplierRepository;
             _eventAggregator = eventAggregator;
            
-           _eventAggregator.GetEvent<OpenSupplierDtlViewEvent>().Subscribe(OnOpenSupplierDetailView);
+           //_eventAggregator.GetEvent<OpenSupplierDtlViewEvent>().Subscribe(OnOpenSupplierDetailView);
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
         }
@@ -62,10 +62,10 @@ namespace Purchase.UI.ViewModel
 
         public ICommand SaveCommand { get; }
 
-        private async void OnOpenSupplierDetailView(int SupplierId)
-        {
-            await LoadAsync(SupplierId);
-        }
+        //private async void OnOpenSupplierDetailView(int SupplierId)
+        //{
+        //    await LoadAsync(SupplierId);
+        //}
 
         private async void OnSaveExecute()
         {
