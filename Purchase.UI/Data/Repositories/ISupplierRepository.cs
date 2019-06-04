@@ -8,5 +8,8 @@ namespace Purchase.UI.Data.Repositories
         Task<Supplier> GetByIdAsync(int ID);
         Task SaveAsync();
         bool HasChanges();
+        void Add(Supplier supplier);
+        void Remove(Supplier supplier);
+       
     }
 }

@@ -23,12 +23,7 @@ namespace Purchase.UI.ViewModel
             _eventAggregator = eventAggregator;
             Suppliers = new ObservableCollection<NavigationItemViewModel>();
             eventAggregator.GetEvent<AfterSupplierSavedEvent>().Subscribe(AfterSupplierSaved);
-        }
-
-        private void AfterSupplierSaved(AfterSupplierSavedEventArgs supplier)
-        {
-            var lookupItem = Suppliers.Single(l => l.Id == supplier.Id);
-            lookupItem.DisplayMember = supplier.DisplayMember;
+            eventAggregator.GetEvent<AfterSupplierDeletedEvent>().Subscribe(AfterSupplierDeleted);
         }
 
         public async Task LoadAsync()
@@ -38,26 +33,34 @@ namespace Purchase.UI.ViewModel
             foreach (var supplier in lookUp)
             {
                 //Suppliers.Add(supplier);
-                Suppliers.Add(new NavigationItemViewModel(supplier.Id,supplier.DisplayMember));
+                Suppliers.Add(new NavigationItemViewModel(supplier.Id,supplier.DisplayMember, _eventAggregator));
             }
         }
 
         public ObservableCollection<NavigationItemViewModel> Suppliers { get; }
 
-        private NavigationItemViewModel _selectedSupplier;
-
-        public NavigationItemViewModel SelectedSupplier
+        private void AfterSupplierDeleted(int supplierId)
         {
-            get { return _selectedSupplier; }
-            set { _selectedSupplier = value;
-                OnpropertyChanged();
-                if (_selectedSupplier != null)
-                {
-                    _eventAggregator.GetEvent<OpenSupplierDtlViewEvent>().Publish(_selectedSupplier.Id);
-                }
+            var supplier = Suppliers.SingleOrDefault(s => s.Id == supplierId);
+
+            if (supplier != null)
+            {
+                Suppliers.Remove(supplier);
             }
         }
 
+        private void AfterSupplierSaved(AfterSupplierSavedEventArgs supplier)
+        {
+            var lookupItem = Suppliers.SingleOrDefault(l => l.Id == supplier.Id);
+            if (lookupItem == null)
+            {
+                Suppliers.Add(new NavigationItemViewModel(supplier.Id, supplier.DisplayMember, _eventAggregator));
+            }
+            else
+            {
+                lookupItem.DisplayMember = supplier.DisplayMember;
+            }
+        }
 
     }
 }

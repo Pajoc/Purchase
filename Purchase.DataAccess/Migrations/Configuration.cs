@@ -24,6 +24,11 @@ namespace Purchase.DataAccess.Migrations
                    new Supplier { Name = "Fedex", Code = "FEX" },
                    new Supplier { Name = "Embal segur", Code = "EBS" }
                   );
+            context.SupplierTypes.AddOrUpdate(
+                st => st.Type,
+                new SupplierType { Type = "Catalog supplier" },
+                new SupplierType { Type = "Custom supplier" },
+                new SupplierType { Type = "Big supplier" });
         }
     }
 }

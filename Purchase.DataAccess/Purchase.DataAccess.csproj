@@ -52,6 +52,10 @@
     <Compile Include="Migrations\201904101604541_InitialDatabase.Designer.cs">
       <DependentUpon>201904101604541_InitialDatabase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906041636591_AddedSupType.cs" />
+    <Compile Include="Migrations\201906041636591_AddedSupType.Designer.cs">
+      <DependentUpon>201906041636591_AddedSupType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="PurchaseDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -69,6 +73,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201904101604541_InitialDatabase.resx">
       <DependentUpon>201904101604541_InitialDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906041636591_AddedSupType.resx">
+      <DependentUpon>201906041636591_AddedSupType.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

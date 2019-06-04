@@ -4,6 +4,7 @@ using Purchase.Model;
 using Purchase.UI.Data;
 using Purchase.UI.Data.Repositories;
 using Purchase.UI.Event;
+using Purchase.UI.View.Services;
 using Purchase.UI.Wrapper;
 using System;
 using System.Collections.Generic;
@@ -18,17 +19,21 @@ namespace Purchase.UI.ViewModel
     {
         private ISupplierRepository _supplierRepository;
         private IEventAggregator _eventAggregator;
+        private IMessageDialogService _messageDialogService;
         private SupplierWrapper _supplier;
         private bool _hasChanges;
 
-        public SupplierDetailViewModel(ISupplierRepository supplierRepository, IEventAggregator eventAggregator)
+        public SupplierDetailViewModel(ISupplierRepository supplierRepository, IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
         {
             _supplierRepository = supplierRepository;
             _eventAggregator = eventAggregator;
-           
+            _messageDialogService = messageDialogService;
+
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
+            DeleteCommand = new DelegateCommand(OnDeleteExecute);
         }
 
+        
         public SupplierWrapper Supplier {
             //Ao ativar o LoadAsync notifica a interface 
             get { return _supplier;  }
@@ -54,10 +59,11 @@ namespace Purchase.UI.ViewModel
         }
 
 
-        public async Task LoadAsync(int SupID)
+        public async Task LoadAsync(int? SupID)
         {
-
-            var sup = await _supplierRepository.GetByIdAsync(SupID);
+            var sup = SupID.HasValue
+              ? await _supplierRepository.GetByIdAsync(SupID.Value)
+              : CreateNewSupplier();
 
             Supplier = new SupplierWrapper(sup);
 
@@ -74,13 +80,22 @@ namespace Purchase.UI.ViewModel
                 {
                     ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                 }
+
+               
             };
 
             //Faz com que volte a verificar OnSaveCanExecute
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+
+            if (Supplier.Id == 0)
+            {
+                Supplier.Name = "";
+            }
         }
 
         public ICommand SaveCommand { get; }
+
+        public ICommand DeleteCommand { get; }
 
         private async void OnSaveExecute()
         {
@@ -98,6 +113,25 @@ namespace Purchase.UI.ViewModel
         private bool OnSaveCanExecute()
         {
             return Supplier!=null && !Supplier.HasErrors && HasChanges;
+        }
+        private async void OnDeleteExecute()
+        {
+            var result = _messageDialogService.ShowOkCancelDialog($"Do you really want to delete this supplier {Supplier.Name}?", "Question");
+            if (result == MessageDialogResult.OK)
+            {
+                _supplierRepository.Remove(Supplier.Model);
+                await _supplierRepository.SaveAsync();
+                _eventAggregator.GetEvent<AfterSupplierDeletedEvent>().Publish(Supplier.Id);
+            }
+        }
+
+
+        private Supplier CreateNewSupplier()
+        {
+            var supplier = new Supplier();
+
+            _supplierRepository.Add(supplier);
+            return supplier;
         }
 
     }

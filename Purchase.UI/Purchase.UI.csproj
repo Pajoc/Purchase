@@ -72,6 +72,7 @@
     <Compile Include="Data\Lookups\LookupDataService.cs" />
     <Compile Include="Data\Repositories\ISupplierRepository.cs" />
     <Compile Include="Data\Repositories\SupplierRepository.cs" />
+    <Compile Include="Event\AfterFriendDeletedEvent.cs" />
     <Compile Include="Event\AfterSupplierSavedEvent.cs" />
     <Compile Include="Event\OpenSupplierDtlViewEvent.cs" />
     <Compile Include="Startup\Bootstrapper.cs" />

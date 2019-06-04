@@ -5,16 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Purchase.UI"
         xmlns:view="clr-namespace:Purchase.UI.View"
+        xmlns:viewModel="clr-namespace:Purchase.UI.ViewModel"
         mc:Ignorable="d"
-        Title="Purchase project" Height="350" Width="525" FontSize="20">
+        Title="Purchase project" Height="400" Width="525" FontSize="20">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModel:SupplierDetailViewModel}">
+            <view:SupplierDetailView/>
+        </DataTemplate>
+    </Window.Resources>
+    
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
+        <Menu Grid.ColumnSpan="2" FontSize="20">
+            <MenuItem Header="Create">
+                <MenuItem Header="New Supplier" Command="{Binding CreateNewSupplierCommand}"/>
+            </MenuItem>
+        </Menu>
         <!-- Bind to Navigation-->
-        <view:NavigationView DataContext="{Binding NavigationViewModel}"/>
+        <view:NavigationView Grid.Row="1" DataContext="{Binding NavigationViewModel}"/>
         <!-- Bind to Detail-->
-        <view:SupplierDetailView Grid.Column="1" DataContext="{Binding SupplierDetailViewModel}"/>
+        <!--<view:SupplierDetailView Grid.Row="1" Grid.Column="1" DataContext="{Binding SupplierDetailViewModel}"/>-->
+        <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding SupplierDetailViewModel}"/>
     </Grid>
 </Window>

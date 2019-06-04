@@ -17,6 +17,16 @@ namespace Purchase.UI.Data.Repositories
             _context = context;
         }
 
+        public void Add(Supplier supplier)
+        {
+            _context.Suppliers.Add(supplier);
+        }
+
+        public void Remove(Supplier supplier)
+        {
+            _context.Suppliers.Remove(supplier);
+        }
+
         public async Task<Supplier> GetByIdAsync(int ID)
         {
             //yield return new Supplier { Name = "Irmãos Valente", Code = "IRV" };

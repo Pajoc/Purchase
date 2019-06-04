@@ -4,7 +4,7 @@ namespace Purchase.UI.ViewModel
 {
     public interface ISupplierDetailViewModel
     {
-        Task LoadAsync(int SupID);
+        Task LoadAsync(int? SupID);
         bool HasChanges { get; }
     }
 }

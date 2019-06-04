@@ -2,7 +2,7 @@
 
 namespace Purchase.UI.Event
 {
-    public class OpenSupplierDtlViewEvent:PubSubEvent<int?>
+    public class AfterSupplierDeletedEvent:PubSubEvent<int>
     {
         
     }

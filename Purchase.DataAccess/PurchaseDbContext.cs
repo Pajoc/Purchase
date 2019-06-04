@@ -14,12 +14,13 @@ namespace Purchase.DataAccess
 
         public DbSet<Supplier> Suppliers { get; set; }
 
+        public DbSet<SupplierType> SupplierTypes { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
         }
-
 
         private void myseed()
         {
