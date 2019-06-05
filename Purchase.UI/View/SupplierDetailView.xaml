@@ -15,6 +15,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -30,7 +32,13 @@
         <TextBox Grid.Row="5" Text="{Binding Supplier.MainEmail,TargetNullValue='', Mode=TwoWay,
                 UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 10"/>
 
-        <StackPanel Grid.Row="7" Orientation="Horizontal">
+        <Label Grid.Row="6" Content="Supplier type" Margin="10 0"/>
+        <ComboBox Grid.Row="7" ItemsSource="{Binding SupplierTypes}" DisplayMemberPath="DisplayMember"
+                  SelectedValuePath="Id"
+                  SelectedValue="{Binding Supplier.TypeOfSupplierId,Mode=TwoWay}"
+                  Margin="10 0 10 10"/>
+        
+        <StackPanel Grid.Row="9" Orientation="Horizontal">
             <Button Content="Save" Width="125" Margin="10" Command="{Binding SaveCommand}"/>
             <Button Content="Delete" Width="125" Margin="10" Command="{Binding DeleteCommand}"/>
         </StackPanel>

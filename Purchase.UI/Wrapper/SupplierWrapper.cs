@@ -49,6 +49,18 @@ namespace Purchase.UI.Wrapper
             }
         }
 
+        public int? TypeOfSupplierId {
+            get
+            {
+                return GetValue<int?>();
+            }
+            set
+            {
+                SetValue(value);
+            }
+        }
+
+
         //private void ValidateProperty(string propertyName)
         //{
         //    ClearErrors(propertyName);

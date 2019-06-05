@@ -6,6 +6,6 @@ namespace Purchase.UI.Data.Loockups
 {
     public interface ISupplierTypeLookupDataService
     {
-        Task<List<LookupSupplier>> GetSupplierTypeLookupAsync();
+        Task<List<LookupItem>> GetSupplierTypeLookupAsync();
     }
 }

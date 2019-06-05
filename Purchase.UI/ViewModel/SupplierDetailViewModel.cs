@@ -36,7 +36,7 @@ namespace Purchase.UI.ViewModel
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
             DeleteCommand = new DelegateCommand(OnDeleteExecute);
-            SupplierTypes = new ObservableCollection<LookupSupplier>();
+            SupplierTypes = new ObservableCollection<LookupItem>();
         }
 
         
@@ -70,7 +70,22 @@ namespace Purchase.UI.ViewModel
             var sup = SupID.HasValue
               ? await _supplierRepository.GetByIdAsync(SupID.Value)
               : CreateNewSupplier();
+            InitializeSupplier(sup);
 
+            await LoadSupplierTypesLookupAsync();
+        }
+
+        
+
+        public ICommand SaveCommand { get; }
+
+        public ICommand DeleteCommand { get; }
+        public ObservableCollection<LookupItem> SupplierTypes { get; }
+
+
+
+        private void InitializeSupplier(Supplier sup)
+        {
             Supplier = new SupplierWrapper(sup);
 
             Supplier.PropertyChanged += (s, e) =>
@@ -87,7 +102,7 @@ namespace Purchase.UI.ViewModel
                     ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                 }
 
-               
+
             };
 
             //Faz com que volte a verificar OnSaveCanExecute
@@ -97,19 +112,18 @@ namespace Purchase.UI.ViewModel
             {
                 Supplier.Name = "";
             }
+        }
 
+        private async Task LoadSupplierTypesLookupAsync()
+        {
             SupplierTypes.Clear();
+            SupplierTypes.Add(new NullLookupItem { DisplayMember = " - " } );
             var lookup = await _supplierTypeLookupDataService.GetSupplierTypeLookupAsync();
             foreach (var lookupItem in lookup)
             {
                 SupplierTypes.Add(lookupItem);
             }
         }
-
-        public ICommand SaveCommand { get; }
-
-        public ICommand DeleteCommand { get; }
-        public ObservableCollection<LookupSupplier> SupplierTypes { get; }
 
         private async void OnSaveExecute()
         {

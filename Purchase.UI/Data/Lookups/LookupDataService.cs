@@ -18,11 +18,11 @@ namespace Purchase.UI.Data.Loockups
             _contextCreator = contextCreator;
         }
 
-        public async Task<List<LookupSupplier>> GetSupplierLookupAsync()
+        public async Task<List<LookupItem>> GetSupplierLookupAsync()
         {
             using (var ctx = _contextCreator())
             {
-                return  await ctx.Suppliers.AsNoTracking().Select(s => new LookupSupplier
+                return  await ctx.Suppliers.AsNoTracking().Select(s => new LookupItem
                 {
                     Id = s.Id,
                     DisplayMember = s.Name
@@ -31,11 +31,11 @@ namespace Purchase.UI.Data.Loockups
 
         }
 
-        public async Task<List<LookupSupplier>> GetSupplierTypeLookupAsync()
+        public async Task<List<LookupItem>> GetSupplierTypeLookupAsync()
         {
             using (var ctx = _contextCreator())
             {
-                return await ctx.SupplierTypes.AsNoTracking().Select(s => new LookupSupplier
+                return await ctx.SupplierTypes.AsNoTracking().Select(s => new LookupItem
                 {
                     Id = s.Id,
                     DisplayMember = s.Type
