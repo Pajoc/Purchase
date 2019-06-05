@@ -2,12 +2,14 @@
 using Prism.Events;
 using Purchase.Model;
 using Purchase.UI.Data;
+using Purchase.UI.Data.Loockups;
 using Purchase.UI.Data.Repositories;
 using Purchase.UI.Event;
 using Purchase.UI.View.Services;
 using Purchase.UI.Wrapper;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,17 +22,21 @@ namespace Purchase.UI.ViewModel
         private ISupplierRepository _supplierRepository;
         private IEventAggregator _eventAggregator;
         private IMessageDialogService _messageDialogService;
+        private ISupplierTypeLookupDataService _supplierTypeLookupDataService;
         private SupplierWrapper _supplier;
         private bool _hasChanges;
 
-        public SupplierDetailViewModel(ISupplierRepository supplierRepository, IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
+        public SupplierDetailViewModel(ISupplierRepository supplierRepository, IEventAggregator eventAggregator,
+            IMessageDialogService messageDialogService, ISupplierTypeLookupDataService supplierTypeLookupDataService)
         {
             _supplierRepository = supplierRepository;
             _eventAggregator = eventAggregator;
             _messageDialogService = messageDialogService;
+            _supplierTypeLookupDataService = supplierTypeLookupDataService;
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
             DeleteCommand = new DelegateCommand(OnDeleteExecute);
+            SupplierTypes = new ObservableCollection<LookupSupplier>();
         }
 
         
@@ -91,11 +97,19 @@ namespace Purchase.UI.ViewModel
             {
                 Supplier.Name = "";
             }
+
+            SupplierTypes.Clear();
+            var lookup = await _supplierTypeLookupDataService.GetSupplierTypeLookupAsync();
+            foreach (var lookupItem in lookup)
+            {
+                SupplierTypes.Add(lookupItem);
+            }
         }
 
         public ICommand SaveCommand { get; }
 
         public ICommand DeleteCommand { get; }
+        public ObservableCollection<LookupSupplier> SupplierTypes { get; }
 
         private async void OnSaveExecute()
         {
