@@ -13,7 +13,7 @@ namespace Purchase.UI.ViewModel
         private IEventAggregator _eventAggregator;
         private Func<ISupplierDetailViewModel> _supplierDetailViewModelCreator;
         private IMessageDialogService _messageDialogService;
-        private ISupplierDetailViewModel _supplierDetailViewModel;
+        private IDetailViewModel _detailViewModel;
 
         //public MainViewModel(INavigationViewModel navigationViewModel, ISupplierDetailViewModel supplierDetailViewModel,
         public MainViewModel(INavigationViewModel navigationViewModel, Func<ISupplierDetailViewModel> supplierDetailViewModelCreator,
@@ -23,11 +23,11 @@ namespace Purchase.UI.ViewModel
             _supplierDetailViewModelCreator = supplierDetailViewModelCreator;
             _messageDialogService = messageDialogService;
 
-            _eventAggregator.GetEvent<OpenSupplierDtlViewEvent>().Subscribe(OnOpenSupplierDetailView);
+            _eventAggregator.GetEvent<OpenDtlViewEvent>().Subscribe(OnOpenDetailView);
 
-            _eventAggregator.GetEvent<AfterSupplierDeletedEvent>().Subscribe(AfterFriendDeleted);
+            _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted);
 
-            CreateNewSupplierCommand = new DelegateCommand(OnCreateNewSupplierExecute);
+            CreateNewDetailCommand = new DelegateCommand<Type>(OnCreateNewDetailExecute);
 
             NavigationViewModel = navigationViewModel;
         }
@@ -38,22 +38,22 @@ namespace Purchase.UI.ViewModel
             await NavigationViewModel.LoadAsync();
         }
 
-        public ICommand CreateNewSupplierCommand { get; }
+        public ICommand CreateNewDetailCommand { get; }
 
         //Os set são colocados diretamente no construtor
         public INavigationViewModel NavigationViewModel { get; }
 
-        public ISupplierDetailViewModel SupplierDetailViewModel
+        public IDetailViewModel DetailViewModel
         {
-            get { return _supplierDetailViewModel; }
-            private set { _supplierDetailViewModel = value;
+            get { return _detailViewModel; }
+            private set { _detailViewModel = value;
                 OnpropertyChanged();
             }
         }
 
-        private async void OnOpenSupplierDetailView(int? SupplierId)
+        private async void OnOpenDetailView(OpenDtlViewEventArgs args)
         {
-            if(SupplierDetailViewModel != null && SupplierDetailViewModel.HasChanges)
+            if(DetailViewModel != null && DetailViewModel.HasChanges)
             {
                 var result = _messageDialogService.ShowOkCancelDialog("You have made changes. Navigate away?", "Question");
                 if(result == MessageDialogResult.Cancel)
@@ -62,19 +62,26 @@ namespace Purchase.UI.ViewModel
                 }
             }
 
-            SupplierDetailViewModel = _supplierDetailViewModelCreator();
-            await SupplierDetailViewModel.LoadAsync(SupplierId);
+
+            switch (args.ViewModelName)
+            {
+                case nameof(SupplierDetailViewModel):
+                    DetailViewModel = _supplierDetailViewModelCreator();
+                    break;
+            }
+            
+            await DetailViewModel.LoadAsync(args.Id);
         }
 
-        private void OnCreateNewSupplierExecute()
+        private void OnCreateNewDetailExecute(Type viewModelType)
         {
-            OnOpenSupplierDetailView(null);
+            OnOpenDetailView(new OpenDtlViewEventArgs { ViewModelName = viewModelType.Name });
         }
 
 
-        private void AfterFriendDeleted(int supplierID)
+        private void AfterDetailDeleted(AfterDetailDeletedEventArgs args)
         {
-            SupplierDetailViewModel = null;
+            DetailViewModel = null;
         }
 
     }

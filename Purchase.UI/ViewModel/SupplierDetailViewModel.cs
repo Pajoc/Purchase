@@ -185,11 +185,12 @@ namespace Purchase.UI.ViewModel
         {
             await _supplierRepository.SaveAsync();
             HasChanges = _supplierRepository.HasChanges();
-            _eventAggregator.GetEvent<AfterSupplierSavedEvent>().Publish(
-                new AfterSupplierSavedEventArgs
+            _eventAggregator.GetEvent<AfterDetailSavedEvent>().Publish(
+                new AfterDetailSavedEventArgs
                 {
                     Id = _supplier.Id,
-                    DisplayMember = _supplier.Name
+                    DisplayMember = _supplier.Name,
+                    ViewModelName = nameof(SupplierDetailViewModel)
                 }
            );
         }
@@ -205,7 +206,11 @@ namespace Purchase.UI.ViewModel
             {
                 _supplierRepository.Remove(Supplier.Model);
                 await _supplierRepository.SaveAsync();
-                _eventAggregator.GetEvent<AfterSupplierDeletedEvent>().Publish(Supplier.Id);
+                _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Publish(new AfterDetailDeletedEventArgs
+                {
+                    Id = Supplier.Id,
+                    ViewModelName = nameof(SupplierDetailViewModel)
+                });
             }
         }
 

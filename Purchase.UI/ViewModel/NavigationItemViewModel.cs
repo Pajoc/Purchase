@@ -6,17 +6,18 @@ using System.Windows.Input;
 
 namespace Purchase.UI.ViewModel
 {
-    public class NavigationItemViewModel : ViewModelBase 
+    public class NavigationItemViewModel : ViewModelBase
     {
         private string _displayMember;
         private IEventAggregator _eventAggregator;
+        private string _detailViewModelName;
 
-        public NavigationItemViewModel(int id, string displayMember, IEventAggregator eventAggregator)
+        public NavigationItemViewModel(int id, string displayMember, string detailViewModelName, IEventAggregator eventAggregator)
         {
             Id = id;
             DisplayMember = displayMember;
-            OpenFriendDetailViewCommand = new DelegateCommand(OnOpenFriendDetailView);
-
+            OpenDetailViewCommand = new DelegateCommand(OnOpenDetailViewExecute);
+            _detailViewModelName = detailViewModelName;
             _eventAggregator = eventAggregator;
         }
 
@@ -32,12 +33,16 @@ namespace Purchase.UI.ViewModel
             }
         }
 
-        public ICommand OpenFriendDetailViewCommand { get; }
+        public ICommand OpenDetailViewCommand { get; }
 
-        private void OnOpenFriendDetailView()
+        private void OnOpenDetailViewExecute()
         {
-            _eventAggregator.GetEvent<OpenSupplierDtlViewEvent>().Publish(Id);
+            _eventAggregator.GetEvent<OpenDtlViewEvent>().Publish(
+                new OpenDtlViewEventArgs
+                {
+                    Id = Id,
+                    ViewModelName = _detailViewModelName
+                });
         }
-
     }
 }

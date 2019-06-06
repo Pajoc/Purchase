@@ -2,13 +2,14 @@
 
 namespace Purchase.UI.Event
 {
-    class AfterSupplierSavedEvent:PubSubEvent<AfterSupplierSavedEventArgs>
+    class AfterDetailSavedEvent:PubSubEvent<AfterDetailSavedEventArgs>
     {
     }
 
-    public class AfterSupplierSavedEventArgs
+    public class AfterDetailSavedEventArgs
     {
         public int Id { get; set; }
         public string DisplayMember { get; set; }
+        public string ViewModelName { get; set; }
     }
 }

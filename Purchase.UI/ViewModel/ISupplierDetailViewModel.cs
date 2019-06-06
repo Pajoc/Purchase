@@ -2,9 +2,9 @@
 
 namespace Purchase.UI.ViewModel
 {
-    public interface ISupplierDetailViewModel
+
+    public interface ISupplierDetailViewModel:IDetailViewModel
     {
-        Task LoadAsync(int? SupID);
-        bool HasChanges { get; }
+     
     }
 }

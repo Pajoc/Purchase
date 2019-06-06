@@ -3,13 +3,8 @@ using Purchase.Model;
 
 namespace Purchase.UI.Data.Repositories
 {
-    public interface ISupplierRepository
+    public interface ISupplierRepository:IGenericRepository<Supplier>
     {
-        Task<Supplier> GetByIdAsync(int ID);
-        Task SaveAsync();
-        bool HasChanges();
-        void Add(Supplier supplier);
-        void Remove(Supplier supplier);
         void RemovePhoneNumber(SupplierPhoneNumber model);
     }
 }
