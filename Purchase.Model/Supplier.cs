@@ -1,9 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Purchase.Model
 {
     public class Supplier
     {
+        public Supplier()
+        {
+            PhoneNumbers = new Collection<SupplierPhoneNumber>();
+        }
+
         public int Id { get; set; }
 
         [Required]
@@ -20,6 +27,8 @@ namespace Purchase.Model
         public int? TypeOfSupplierId { get; set; }
 
         public SupplierType TypeOfSupplier { get; set; }
+
+        public ICollection<SupplierPhoneNumber> PhoneNumbers { get; set; }
 
     }
 }

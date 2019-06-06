@@ -10,6 +10,6 @@ namespace Purchase.UI.Data.Repositories
         bool HasChanges();
         void Add(Supplier supplier);
         void Remove(Supplier supplier);
-       
+        void RemovePhoneNumber(SupplierPhoneNumber model);
     }
 }

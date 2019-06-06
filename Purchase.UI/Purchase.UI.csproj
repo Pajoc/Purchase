@@ -94,6 +94,7 @@
     </Compile>
     <Compile Include="Wrapper\ModelWrapper.cs" />
     <Compile Include="Wrapper\NotifyDataErrorInfoBase.cs" />
+    <Compile Include="Wrapper\SupplierPhoneNumberWrapper.cs" />
     <Compile Include="Wrapper\SupplierWrapper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

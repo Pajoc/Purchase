@@ -16,6 +16,8 @@ namespace Purchase.DataAccess
 
         public DbSet<SupplierType> SupplierTypes { get; set; }
 
+        public DbSet<SupplierPhoneNumber> SupplierPhoneNumbers { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

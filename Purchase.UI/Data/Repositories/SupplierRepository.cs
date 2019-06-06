@@ -35,7 +35,9 @@ namespace Purchase.UI.Data.Repositories
             //yield return new Supplier { Name = "Fedex", Code = "FEX" };
             //yield return new Supplier { Name = "Embal segur", Code = "EBS" };
 
-            return await _context.Suppliers.SingleAsync(s => s.Id == ID);
+            return await _context.Suppliers
+                .Include(f => f.PhoneNumbers)
+                .SingleAsync(s => s.Id == ID);
 
         }
 
@@ -47,6 +49,11 @@ namespace Purchase.UI.Data.Repositories
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public void RemovePhoneNumber(SupplierPhoneNumber model)
+        {
+            _context.SupplierPhoneNumbers.Remove(model);
         }
     }
 }

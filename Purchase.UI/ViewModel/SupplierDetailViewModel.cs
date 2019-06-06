@@ -10,6 +10,7 @@ using Purchase.UI.Wrapper;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace Purchase.UI.ViewModel
         private ISupplierTypeLookupDataService _supplierTypeLookupDataService;
         private SupplierWrapper _supplier;
         private bool _hasChanges;
+        private SupplierPhoneNumberWrapper _selectedPhoneNumber;
 
         public SupplierDetailViewModel(ISupplierRepository supplierRepository, IEventAggregator eventAggregator,
             IMessageDialogService messageDialogService, ISupplierTypeLookupDataService supplierTypeLookupDataService)
@@ -36,7 +38,12 @@ namespace Purchase.UI.ViewModel
 
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
             DeleteCommand = new DelegateCommand(OnDeleteExecute);
+            AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneNumberExecute);
+            RemovePhoneNumberCommand = new DelegateCommand(OnRemovePhoneNumberExecute, OnRemovePhoneNumberCanExecute);
+
             SupplierTypes = new ObservableCollection<LookupItem>();
+            PhoneNumbers = new ObservableCollection<SupplierPhoneNumberWrapper>();
+
         }
 
         
@@ -48,6 +55,20 @@ namespace Purchase.UI.ViewModel
                 _supplier = value;
                 OnpropertyChanged();
             }
+        }
+
+
+        public SupplierPhoneNumberWrapper SelectedPhoneNumber
+        {
+            get { return _selectedPhoneNumber; }
+
+            set
+            {
+                _selectedPhoneNumber = value;
+                OnpropertyChanged();
+                ((DelegateCommand)RemovePhoneNumberCommand).RaiseCanExecuteChanged();
+            }
+
         }
 
         public bool HasChanges
@@ -70,18 +91,24 @@ namespace Purchase.UI.ViewModel
             var sup = SupID.HasValue
               ? await _supplierRepository.GetByIdAsync(SupID.Value)
               : CreateNewSupplier();
+
             InitializeSupplier(sup);
+
+            InitializeSupplierPhoneNumbers(sup.PhoneNumbers);
 
             await LoadSupplierTypesLookupAsync();
         }
 
-        
-
         public ICommand SaveCommand { get; }
 
         public ICommand DeleteCommand { get; }
-        public ObservableCollection<LookupItem> SupplierTypes { get; }
 
+        public ICommand AddPhoneNumberCommand { get; }
+
+        public ICommand RemovePhoneNumberCommand { get; }
+
+        public ObservableCollection<LookupItem> SupplierTypes { get; }
+        public ObservableCollection<SupplierPhoneNumberWrapper> PhoneNumbers { get; }
 
 
         private void InitializeSupplier(Supplier sup)
@@ -114,6 +141,35 @@ namespace Purchase.UI.ViewModel
             }
         }
 
+        private void InitializeSupplierPhoneNumbers(ICollection<SupplierPhoneNumber> phoneNumbers)
+        {
+         
+            foreach (var wrapper in PhoneNumbers)
+            {
+                wrapper.PropertyChanged -= SupplierPhoneNumberWrapper_PropertyChanged;
+            }
+            PhoneNumbers.Clear();
+            foreach (var supplierPhoneNumber in phoneNumbers)
+            {
+                var wrapper = new SupplierPhoneNumberWrapper(supplierPhoneNumber);
+                PhoneNumbers.Add(wrapper);
+                wrapper.PropertyChanged += SupplierPhoneNumberWrapper_PropertyChanged;
+            }
+
+        }
+
+        private void SupplierPhoneNumberWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (!HasChanges)
+            {
+                HasChanges = _supplierRepository.HasChanges();
+            }
+            if (e.PropertyName == nameof(SupplierPhoneNumberWrapper.HasErrors))
+            {
+                ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+            }
+        }
+
         private async Task LoadSupplierTypesLookupAsync()
         {
             SupplierTypes.Clear();
@@ -140,7 +196,7 @@ namespace Purchase.UI.ViewModel
 
         private bool OnSaveCanExecute()
         {
-            return Supplier!=null && !Supplier.HasErrors && HasChanges;
+            return Supplier!=null && !Supplier.HasErrors && PhoneNumbers.All(pn => !pn.HasErrors) && HasChanges;
         }
         private async void OnDeleteExecute()
         {
@@ -153,6 +209,30 @@ namespace Purchase.UI.ViewModel
             }
         }
 
+        private void OnAddPhoneNumberExecute()
+        {
+            var newNumber = new SupplierPhoneNumberWrapper(new SupplierPhoneNumber());
+            newNumber.PropertyChanged += SupplierPhoneNumberWrapper_PropertyChanged;
+            PhoneNumbers.Add(newNumber);
+            Supplier.Model.PhoneNumbers.Add(newNumber.Model);
+            newNumber.Number = "";
+        }
+
+        private void OnRemovePhoneNumberExecute()
+        {
+            SelectedPhoneNumber.PropertyChanged -= SupplierPhoneNumberWrapper_PropertyChanged;
+            //Supplier.Model.PhoneNumbers.Remove(SelectedPhoneNumber.Model); não funciona porque o id em phonenumbers não é nulo (nem deve ser é para remover tudo)
+            _supplierRepository.RemovePhoneNumber(SelectedPhoneNumber.Model);
+            PhoneNumbers.Remove(SelectedPhoneNumber);
+            SelectedPhoneNumber = null;
+            HasChanges = _supplierRepository.HasChanges();
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+        }
+
+        private bool OnRemovePhoneNumberCanExecute()
+        {
+            return SelectedPhoneNumber != null;
+        }
 
         private Supplier CreateNewSupplier()
         {

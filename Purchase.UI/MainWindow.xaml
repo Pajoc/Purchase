@@ -7,7 +7,7 @@
         xmlns:view="clr-namespace:Purchase.UI.View"
         xmlns:viewModel="clr-namespace:Purchase.UI.ViewModel"
         mc:Ignorable="d"
-        Title="Purchase project" Height="400" Width="525" FontSize="20">
+        Title="Purchase project" Height="700" Width="1000" WindowStartupLocation="CenterScreen" FontSize="20">
     <Window.Resources>
         <DataTemplate DataType="{x:Type viewModel:SupplierDetailViewModel}">
             <view:SupplierDetailView/>

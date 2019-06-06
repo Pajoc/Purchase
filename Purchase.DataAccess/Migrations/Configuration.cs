@@ -29,6 +29,11 @@ namespace Purchase.DataAccess.Migrations
                 new SupplierType { Type = "Catalog supplier" },
                 new SupplierType { Type = "Custom supplier" },
                 new SupplierType { Type = "Big supplier" });
+
+            context.SaveChanges();
+
+            context.SupplierPhoneNumbers.AddOrUpdate(pn => pn.Number,
+                new SupplierPhoneNumber { Number = "+351 258721050", SupplierId = context.Suppliers.First().Id });
         }
     }
 }
