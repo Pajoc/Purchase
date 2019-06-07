@@ -26,7 +26,7 @@ namespace Purchase.UI.Startup
             builder.RegisterType<SupplierDetailViewModel>().As<ISupplierDetailViewModel>();
 
             builder.RegisterType<SupplierRepository>().As<ISupplierRepository>();
-
+            builder.RegisterType<MeetingRepository>().As<IMeetingRepository>();
             builder.RegisterType<PurchaseDbContext>().AsSelf();
 
             //Vou ter mais que uma

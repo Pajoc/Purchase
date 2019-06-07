@@ -2,6 +2,7 @@ namespace Purchase.DataAccess.Migrations
 {
     using Purchase.Model;
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
@@ -34,6 +35,20 @@ namespace Purchase.DataAccess.Migrations
 
             context.SupplierPhoneNumbers.AddOrUpdate(pn => pn.Number,
                 new SupplierPhoneNumber { Number = "+351 258721050", SupplierId = context.Suppliers.First().Id });
+
+            context.Meetings.AddOrUpdate(m => m.Title,
+                new Meeting
+                {
+                    Title = "Project xpto",
+                    DateFrom = new DateTime(2019, 7, 10),
+                    DateTo = new DateTime(2019, 7, 10),
+                    Suppliers = new List<Supplier>
+                    {
+                        context.Suppliers.Single(s => s.Name == "Acebron"),
+                        context.Suppliers.Single(s => s.Name == "Fedex"),
+                    }
+                });
+
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Purchase.Model
         public Supplier()
         {
             PhoneNumbers = new Collection<SupplierPhoneNumber>();
+            Meetings = new Collection<Meeting>();
         }
 
         public int Id { get; set; }
@@ -29,6 +30,8 @@ namespace Purchase.Model
         public SupplierType TypeOfSupplier { get; set; }
 
         public ICollection<SupplierPhoneNumber> PhoneNumbers { get; set; }
+
+        public ICollection<Meeting> Meetings { get; set; }
 
     }
 }

@@ -18,26 +18,22 @@ using System.Windows.Input;
 
 namespace Purchase.UI.ViewModel
 {
-    public class SupplierDetailViewModel : ViewModelBase, ISupplierDetailViewModel
+    public class SupplierDetailViewModel : DetailViewModelBase, ISupplierDetailViewModel
     {
         private ISupplierRepository _supplierRepository;
-        private IEventAggregator _eventAggregator;
         private IMessageDialogService _messageDialogService;
         private ISupplierTypeLookupDataService _supplierTypeLookupDataService;
         private SupplierWrapper _supplier;
-        private bool _hasChanges;
+       
         private SupplierPhoneNumberWrapper _selectedPhoneNumber;
 
         public SupplierDetailViewModel(ISupplierRepository supplierRepository, IEventAggregator eventAggregator,
-            IMessageDialogService messageDialogService, ISupplierTypeLookupDataService supplierTypeLookupDataService)
+            IMessageDialogService messageDialogService, ISupplierTypeLookupDataService supplierTypeLookupDataService):base(eventAggregator)
         {
             _supplierRepository = supplierRepository;
-            _eventAggregator = eventAggregator;
             _messageDialogService = messageDialogService;
             _supplierTypeLookupDataService = supplierTypeLookupDataService;
 
-            SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
-            DeleteCommand = new DelegateCommand(OnDeleteExecute);
             AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneNumberExecute);
             RemovePhoneNumberCommand = new DelegateCommand(OnRemovePhoneNumberExecute, OnRemovePhoneNumberCanExecute);
 
@@ -71,22 +67,7 @@ namespace Purchase.UI.ViewModel
 
         }
 
-        public bool HasChanges
-        {
-            get { return _hasChanges; }
-            set
-            {
-                if (_hasChanges != value)
-                {
-                    _hasChanges = value;
-                    OnpropertyChanged();
-                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
-                }
-            }
-        }
-
-
-        public async Task LoadAsync(int? SupID)
+        public override async Task LoadAsync(int? SupID)
         {
             var sup = SupID.HasValue
               ? await _supplierRepository.GetByIdAsync(SupID.Value)
@@ -98,10 +79,6 @@ namespace Purchase.UI.ViewModel
 
             await LoadSupplierTypesLookupAsync();
         }
-
-        public ICommand SaveCommand { get; }
-
-        public ICommand DeleteCommand { get; }
 
         public ICommand AddPhoneNumberCommand { get; }
 
@@ -181,36 +158,38 @@ namespace Purchase.UI.ViewModel
             }
         }
 
-        private async void OnSaveExecute()
+        protected override async void OnSaveExecute()
         {
             await _supplierRepository.SaveAsync();
             HasChanges = _supplierRepository.HasChanges();
-            _eventAggregator.GetEvent<AfterDetailSavedEvent>().Publish(
-                new AfterDetailSavedEventArgs
-                {
-                    Id = _supplier.Id,
-                    DisplayMember = _supplier.Name,
-                    ViewModelName = nameof(SupplierDetailViewModel)
-                }
-           );
+            RaiseDetailSavedEvent(Supplier.Id, Supplier.Name);
+           // EventAggregator.GetEvent<AfterDetailSavedEvent>().Publish(
+           //     new AfterDetailSavedEventArgs
+           //     {
+           //         Id = _supplier.Id,
+           //         DisplayMember = _supplier.Name,
+           //         ViewModelName = nameof(SupplierDetailViewModel)
+           //     }
+           //);
         }
 
-        private bool OnSaveCanExecute()
+        protected override bool OnSaveCanExecute()
         {
             return Supplier!=null && !Supplier.HasErrors && PhoneNumbers.All(pn => !pn.HasErrors) && HasChanges;
         }
-        private async void OnDeleteExecute()
+        protected override async void OnDeleteExecute()
         {
             var result = _messageDialogService.ShowOkCancelDialog($"Do you really want to delete this supplier {Supplier.Name}?", "Question");
             if (result == MessageDialogResult.OK)
             {
                 _supplierRepository.Remove(Supplier.Model);
                 await _supplierRepository.SaveAsync();
-                _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Publish(new AfterDetailDeletedEventArgs
-                {
-                    Id = Supplier.Id,
-                    ViewModelName = nameof(SupplierDetailViewModel)
-                });
+                RaiseDetailDeletedEvent(Supplier.Id);
+                //EventAggregator.GetEvent<AfterDetailDeletedEvent>().Publish(new AfterDetailDeletedEventArgs
+                //{
+                //    Id = Supplier.Id,
+                //    ViewModelName = nameof(SupplierDetailViewModel)
+                //});
             }
         }
 
