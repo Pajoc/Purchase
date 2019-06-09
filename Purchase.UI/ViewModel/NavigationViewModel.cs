@@ -80,16 +80,16 @@ namespace Purchase.UI.ViewModel
             }
         }
 
-        private void AfterDetailSaved(AfterDetailSavedEventArgs obj)
+        private void AfterDetailSaved(AfterDetailSavedEventArgs args)
         {
 
-            switch (obj.ViewModelName)
+            switch (args.ViewModelName)
             {
                 case nameof(SupplierDetailViewModel):
-                    AfterDetailSaved(Suppliers, obj);
+                    AfterDetailSaved(Suppliers, args);
                     break;
                 case nameof(MeetingDetailViewModel):
-                    AfterDetailSaved(Meetings, obj);
+                    AfterDetailSaved(Meetings, args);
                     break;
             }
         }

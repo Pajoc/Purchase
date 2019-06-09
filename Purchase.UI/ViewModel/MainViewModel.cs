@@ -15,7 +15,6 @@ namespace Purchase.UI.ViewModel
         private IMessageDialogService _messageDialogService;
         private IDetailViewModel _detailViewModel;
 
-        //public MainViewModel(INavigationViewModel navigationViewModel, ISupplierDetailViewModel supplierDetailViewModel,
         public MainViewModel(INavigationViewModel navigationViewModel, Func<ISupplierDetailViewModel> supplierDetailViewModelCreator,
             IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
         {
