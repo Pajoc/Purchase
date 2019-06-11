@@ -1,6 +1,7 @@
 ﻿using Purchase.DataAccess;
 using Purchase.Model;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Purchase.UI.Data.Repositories
@@ -75,6 +76,12 @@ namespace Purchase.UI.Data.Repositories
             Context.SupplierPhoneNumbers.Remove(model);
         }
 
+        public async Task<bool> HasMeetingsAsync(int supplierId)
+        {
+            return await Context.Meetings.AsNoTracking()
+                .Include(m => m.Suppliers)
+                .AnyAsync(m => m.Suppliers.Any(s => s.Id == supplierId));
+        }
 
     }
 }

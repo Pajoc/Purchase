@@ -17,22 +17,23 @@ namespace Purchase.UI.Startup
 
             builder.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
 
+            builder.RegisterType<PurchaseDbContext>().AsSelf();
+
             builder.RegisterType<MainWindow>().AsSelf();
 
             builder.RegisterType<MessageDialogService>().As<IMessageDialogService>();
 
             builder.RegisterType<MainViewModel>().AsSelf();
             builder.RegisterType<NavigationViewModel>().As<INavigationViewModel>();
-            builder.RegisterType<SupplierDetailViewModel>().As<ISupplierDetailViewModel>();
-
-            builder.RegisterType<SupplierRepository>().As<ISupplierRepository>();
-            builder.RegisterType<MeetingRepository>().As<IMeetingRepository>();
-            builder.RegisterType<PurchaseDbContext>().AsSelf();
+            //builder.RegisterType<SupplierDetailViewModel>().As<ISupplierDetailViewModel>();
+            builder.RegisterType<SupplierDetailViewModel>().Keyed<IDetailViewModel>(nameof(SupplierDetailViewModel));
+            builder.RegisterType<MeetingDetailViewModel>().Keyed<IDetailViewModel>(nameof(MeetingDetailViewModel));
 
             //Vou ter mais que uma
             builder.RegisterType<LookupDataService>().AsImplementedInterfaces();
+            builder.RegisterType<SupplierRepository>().As<ISupplierRepository>();
+            builder.RegisterType<MeetingRepository>().As<IMeetingRepository>();
 
-            
 
             return builder.Build();
         }

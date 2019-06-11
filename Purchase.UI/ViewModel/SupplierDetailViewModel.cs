@@ -179,6 +179,14 @@ namespace Purchase.UI.ViewModel
         }
         protected override async void OnDeleteExecute()
         {
+
+            if (await _supplierRepository.HasMeetingsAsync(Supplier.Id))
+            {
+                _messageDialogService.ShowInfoDialog($"{Supplier.Name} can't be deleted while he is part exists of a meeting.");
+                return;
+            }
+
+
             var result = _messageDialogService.ShowOkCancelDialog($"Do you really want to delete this supplier {Supplier.Name}?", "Question");
             if (result == MessageDialogResult.OK)
             {

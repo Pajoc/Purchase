@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using Autofac.Features.Indexed;
+using Prism.Commands;
 using Prism.Events;
 using Purchase.UI.Event;
 using Purchase.UI.View.Services;
@@ -11,15 +12,15 @@ namespace Purchase.UI.ViewModel
     public class MainViewModel: ViewModelBase
     {
         private IEventAggregator _eventAggregator;
-        private Func<ISupplierDetailViewModel> _supplierDetailViewModelCreator;
+        private IIndex<string, IDetailViewModel> _detailViewModelCreator;
         private IMessageDialogService _messageDialogService;
         private IDetailViewModel _detailViewModel;
 
-        public MainViewModel(INavigationViewModel navigationViewModel, Func<ISupplierDetailViewModel> supplierDetailViewModelCreator,
+        public MainViewModel(INavigationViewModel navigationViewModel,IIndex<string,IDetailViewModel> detailViewModelCreator,
             IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
         {
             _eventAggregator = eventAggregator;
-            _supplierDetailViewModelCreator = supplierDetailViewModelCreator;
+            _detailViewModelCreator = detailViewModelCreator;
             _messageDialogService = messageDialogService;
 
             _eventAggregator.GetEvent<OpenDtlViewEvent>().Subscribe(OnOpenDetailView);
@@ -61,14 +62,21 @@ namespace Purchase.UI.ViewModel
                 }
             }
 
+            //switch (args.ViewModelName)
+            //{
+            //    case nameof(SupplierDetailViewModel):
+            //        DetailViewModel = _supplierDetailViewModelCreator();
+            //        break;
+            //    case nameof(MeetingDetailViewModel):
+            //        DetailViewModel = _meetingDetailViewModelCreator();
+            //        break;
+            //    default:
+            //        throw new Exception($"ViewModel {args.ViewModelName} not mapped");
+            //}
 
-            switch (args.ViewModelName)
-            {
-                case nameof(SupplierDetailViewModel):
-                    DetailViewModel = _supplierDetailViewModelCreator();
-                    break;
-            }
-            
+            //é necessário registar o viewmodel com um nome
+            DetailViewModel = _detailViewModelCreator[args.ViewModelName];
+
             await DetailViewModel.LoadAsync(args.Id);
         }
 
