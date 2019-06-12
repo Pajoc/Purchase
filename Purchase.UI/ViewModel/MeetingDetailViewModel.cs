@@ -85,6 +85,8 @@ namespace Purchase.UI.ViewModel
         {
             var meeting = meetingId.HasValue ? await _meetingRepository.GetByIdAsync(meetingId.Value) : CreateNewMeeting();
 
+            Id = meeting.Id;
+
             InitializeMeeting(meeting);
 
             //Load Sup for meetings
@@ -170,6 +172,7 @@ namespace Purchase.UI.ViewModel
         {
             await _meetingRepository.SaveAsync();
             HasChanges = _meetingRepository.HasChanges();
+            Id = Meeting.Id;
             RaiseDetailSavedEvent(Meeting.Id, Meeting.Title);
         }
 

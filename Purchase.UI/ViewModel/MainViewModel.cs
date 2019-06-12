@@ -4,6 +4,8 @@ using Prism.Events;
 using Purchase.UI.Event;
 using Purchase.UI.View.Services;
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -14,7 +16,7 @@ namespace Purchase.UI.ViewModel
         private IEventAggregator _eventAggregator;
         private IIndex<string, IDetailViewModel> _detailViewModelCreator;
         private IMessageDialogService _messageDialogService;
-        private IDetailViewModel _detailViewModel;
+        private IDetailViewModel _selecteddetailViewModel;
 
         public MainViewModel(INavigationViewModel navigationViewModel,IIndex<string,IDetailViewModel> detailViewModelCreator,
             IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
@@ -22,6 +24,9 @@ namespace Purchase.UI.ViewModel
             _eventAggregator = eventAggregator;
             _detailViewModelCreator = detailViewModelCreator;
             _messageDialogService = messageDialogService;
+
+            //faz o set
+            DetailViewModels = new ObservableCollection<IDetailViewModel>();
 
             _eventAggregator.GetEvent<OpenDtlViewEvent>().Subscribe(OnOpenDetailView);
 
@@ -43,24 +48,29 @@ namespace Purchase.UI.ViewModel
         //Os set são colocados diretamente no construtor
         public INavigationViewModel NavigationViewModel { get; }
 
-        public IDetailViewModel DetailViewModel
+        //Para poder ter tabs
+        public ObservableCollection<IDetailViewModel> DetailViewModels { get; }
+        //Passa a ser usado para o detailVM selecionado
+        public IDetailViewModel SelectedDetailViewModel
         {
-            get { return _detailViewModel; }
-            private set { _detailViewModel = value;
+            get { return _selecteddetailViewModel; }
+            set { _selecteddetailViewModel = value;
                 OnpropertyChanged();
             }
         }
 
         private async void OnOpenDetailView(OpenDtlViewEventArgs args)
         {
-            if(DetailViewModel != null && DetailViewModel.HasChanges)
-            {
-                var result = _messageDialogService.ShowOkCancelDialog("You have made changes. Navigate away?", "Question");
-                if(result == MessageDialogResult.Cancel)
-                {
-                    return;
-                }
-            }
+            #region olds
+            //Com tabs n se aplica porque mudamos o tab mas o outro continua aberto
+            //if(SelectedDetailViewModel != null && SelectedDetailViewModel.HasChanges)
+            //{
+            //    var result = _messageDialogService.ShowOkCancelDialog("You have made changes. Navigate away?", "Question");
+            //    if(result == MessageDialogResult.Cancel)
+            //    {
+            //        return;
+            //    }
+            //}
 
             //switch (args.ViewModelName)
             //{
@@ -73,11 +83,20 @@ namespace Purchase.UI.ViewModel
             //    default:
             //        throw new Exception($"ViewModel {args.ViewModelName} not mapped");
             //}
+            #endregion
 
-            //é necessário registar o viewmodel com um nome
-            DetailViewModel = _detailViewModelCreator[args.ViewModelName];
+            var detailViewModel = DetailViewModels.SingleOrDefault(vm => vm.Id == args.Id
+            && vm.GetType().Name == args.ViewModelName);
 
-            await DetailViewModel.LoadAsync(args.Id);
+            if(detailViewModel == null)
+            {
+                //Não existe na lista, novo tab
+                detailViewModel = _detailViewModelCreator[args.ViewModelName];
+                await detailViewModel.LoadAsync(args.Id);
+                //Adicionado à lista de tabs
+                DetailViewModels.Add(detailViewModel);
+            }
+            SelectedDetailViewModel = detailViewModel;
         }
 
         private void OnCreateNewDetailExecute(Type viewModelType)
@@ -88,7 +107,15 @@ namespace Purchase.UI.ViewModel
 
         private void AfterDetailDeleted(AfterDetailDeletedEventArgs args)
         {
-            DetailViewModel = null;
+            //apanhar o tab para remover
+            var detailViewModel = DetailViewModels.SingleOrDefault(vm => vm.Id == args.Id
+           && vm.GetType().Name == args.ViewModelName);
+
+            if (detailViewModel != null)
+            {
+                DetailViewModels.Remove(detailViewModel);
+            }
+
         }
 
     }

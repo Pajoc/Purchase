@@ -73,6 +73,8 @@ namespace Purchase.UI.ViewModel
               ? await _supplierRepository.GetByIdAsync(SupID.Value)
               : CreateNewSupplier();
 
+            Id = sup.Id;
+
             InitializeSupplier(sup);
 
             InitializeSupplierPhoneNumbers(sup.PhoneNumbers);
@@ -162,6 +164,8 @@ namespace Purchase.UI.ViewModel
         {
             await _supplierRepository.SaveAsync();
             HasChanges = _supplierRepository.HasChanges();
+            Id = Supplier.Id;
+
             RaiseDetailSavedEvent(Supplier.Id, Supplier.Name);
            // EventAggregator.GetEvent<AfterDetailSavedEvent>().Publish(
            //     new AfterDetailSavedEventArgs

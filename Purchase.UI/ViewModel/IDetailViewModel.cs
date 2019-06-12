@@ -10,5 +10,6 @@ namespace Purchase.UI.ViewModel
     {
         Task LoadAsync(int? ID);
         bool HasChanges { get; }
+        int Id { get; }
     }
 }
