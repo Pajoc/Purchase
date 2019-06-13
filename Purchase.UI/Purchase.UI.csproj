@@ -93,6 +93,7 @@
     <Compile Include="Data\Repositories\ISupplierRepository.cs" />
     <Compile Include="Data\Repositories\MeetingRepository.cs" />
     <Compile Include="Data\Repositories\SupplierRepository.cs" />
+    <Compile Include="Event\AfterDetailClosedEvent.cs" />
     <Compile Include="Event\AfterDetailDeletedEvent.cs" />
     <Compile Include="Event\AfterDetailSavedEvent.cs" />
     <Compile Include="Event\OpenDtlViewEvent.cs" />

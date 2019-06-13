@@ -76,7 +76,7 @@ namespace Purchase.UI.ViewModel
 
             if (item != null)
             {
-                Suppliers.Remove(item);
+                items.Remove(item);
             }
         }
 

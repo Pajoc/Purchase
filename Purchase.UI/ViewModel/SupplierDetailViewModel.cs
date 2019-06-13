@@ -21,17 +21,16 @@ namespace Purchase.UI.ViewModel
     public class SupplierDetailViewModel : DetailViewModelBase, ISupplierDetailViewModel
     {
         private ISupplierRepository _supplierRepository;
-        private IMessageDialogService _messageDialogService;
+        
         private ISupplierTypeLookupDataService _supplierTypeLookupDataService;
         private SupplierWrapper _supplier;
        
         private SupplierPhoneNumberWrapper _selectedPhoneNumber;
 
         public SupplierDetailViewModel(ISupplierRepository supplierRepository, IEventAggregator eventAggregator,
-            IMessageDialogService messageDialogService, ISupplierTypeLookupDataService supplierTypeLookupDataService):base(eventAggregator)
+            IMessageDialogService messageDialogService, ISupplierTypeLookupDataService supplierTypeLookupDataService):base(eventAggregator, messageDialogService)
         {
             _supplierRepository = supplierRepository;
-            _messageDialogService = messageDialogService;
             _supplierTypeLookupDataService = supplierTypeLookupDataService;
 
             AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneNumberExecute);
@@ -67,13 +66,15 @@ namespace Purchase.UI.ViewModel
 
         }
 
-        public override async Task LoadAsync(int? SupID)
+        public override async Task LoadAsync(int SupID)
         {
-            var sup = SupID.HasValue
-              ? await _supplierRepository.GetByIdAsync(SupID.Value)
+            //var sup = SupID.HasValue ? await _supplierRepository.GetByIdAsync(SupID.Value) : : CreateNewSupplier();
+
+            var sup = SupID > 0
+              ? await _supplierRepository.GetByIdAsync(SupID)
               : CreateNewSupplier();
 
-            Id = sup.Id;
+            Id = SupID;
 
             InitializeSupplier(sup);
 
@@ -108,6 +109,10 @@ namespace Purchase.UI.ViewModel
                     ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                 }
 
+                if (e.PropertyName == nameof(Supplier.Name))
+                {
+                    SetTitle();
+                }
 
             };
 
@@ -118,6 +123,14 @@ namespace Purchase.UI.ViewModel
             {
                 Supplier.Name = "";
             }
+
+            SetTitle();
+
+        }
+
+        private void SetTitle()
+        {
+            Title = $"{Supplier.Code}";
         }
 
         private void InitializeSupplierPhoneNumbers(ICollection<SupplierPhoneNumber> phoneNumbers)
@@ -186,12 +199,12 @@ namespace Purchase.UI.ViewModel
 
             if (await _supplierRepository.HasMeetingsAsync(Supplier.Id))
             {
-                _messageDialogService.ShowInfoDialog($"{Supplier.Name} can't be deleted while he is part exists of a meeting.");
+                MessageDialogService.ShowInfoDialog($"{Supplier.Name} can't be deleted while he is part exists of a meeting.");
                 return;
             }
 
 
-            var result = _messageDialogService.ShowOkCancelDialog($"Do you really want to delete this supplier {Supplier.Name}?", "Question");
+            var result = MessageDialogService.ShowOkCancelDialog($"Do you really want to delete this supplier {Supplier.Name}?", "Question");
             if (result == MessageDialogResult.OK)
             {
                 _supplierRepository.Remove(Supplier.Model);

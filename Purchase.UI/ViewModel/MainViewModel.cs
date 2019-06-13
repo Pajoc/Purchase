@@ -11,14 +11,14 @@ using System.Windows.Input;
 
 namespace Purchase.UI.ViewModel
 {
-    public class MainViewModel: ViewModelBase
+    public class MainViewModel : ViewModelBase
     {
         private IEventAggregator _eventAggregator;
         private IIndex<string, IDetailViewModel> _detailViewModelCreator;
         private IMessageDialogService _messageDialogService;
         private IDetailViewModel _selecteddetailViewModel;
 
-        public MainViewModel(INavigationViewModel navigationViewModel,IIndex<string,IDetailViewModel> detailViewModelCreator,
+        public MainViewModel(INavigationViewModel navigationViewModel, IIndex<string, IDetailViewModel> detailViewModelCreator,
             IEventAggregator eventAggregator, IMessageDialogService messageDialogService)
         {
             _eventAggregator = eventAggregator;
@@ -32,11 +32,12 @@ namespace Purchase.UI.ViewModel
 
             _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted);
 
+            _eventAggregator.GetEvent<AfterDetailClosedEvent>().Subscribe(AfterDetailClosed);
+
             CreateNewDetailCommand = new DelegateCommand<Type>(OnCreateNewDetailExecute);
 
             NavigationViewModel = navigationViewModel;
         }
-
 
         public async Task LoadAsync()
         {
@@ -54,7 +55,9 @@ namespace Purchase.UI.ViewModel
         public IDetailViewModel SelectedDetailViewModel
         {
             get { return _selecteddetailViewModel; }
-            set { _selecteddetailViewModel = value;
+            set
+            {
+                _selecteddetailViewModel = value;
                 OnpropertyChanged();
             }
         }
@@ -88,7 +91,7 @@ namespace Purchase.UI.ViewModel
             var detailViewModel = DetailViewModels.SingleOrDefault(vm => vm.Id == args.Id
             && vm.GetType().Name == args.ViewModelName);
 
-            if(detailViewModel == null)
+            if (detailViewModel == null)
             {
                 //Não existe na lista, novo tab
                 detailViewModel = _detailViewModelCreator[args.ViewModelName];
@@ -99,24 +102,37 @@ namespace Purchase.UI.ViewModel
             SelectedDetailViewModel = detailViewModel;
         }
 
+        private int nextNewItemId = 0;
+
+        //Usado pelo menu items
         private void OnCreateNewDetailExecute(Type viewModelType)
         {
-            OnOpenDetailView(new OpenDtlViewEventArgs { ViewModelName = viewModelType.Name });
+            OnOpenDetailView(new OpenDtlViewEventArgs { Id = nextNewItemId--, ViewModelName = viewModelType.Name });
         }
 
 
         private void AfterDetailDeleted(AfterDetailDeletedEventArgs args)
         {
+            RemoveDetailViewModel(args.Id, args.ViewModelName);
+        }
+
+        private void AfterDetailClosed(AfterDetailClosedDeletedEventArgs args)
+        {
+            RemoveDetailViewModel(args.Id, args.ViewModelName);
+        }
+
+        private void RemoveDetailViewModel(int id, string viewModelName)
+        {
             //apanhar o tab para remover
-            var detailViewModel = DetailViewModels.SingleOrDefault(vm => vm.Id == args.Id
-           && vm.GetType().Name == args.ViewModelName);
+            var detailViewModel = DetailViewModels.SingleOrDefault(vm => vm.Id == id
+           && vm.GetType().Name == viewModelName);
 
             if (detailViewModel != null)
             {
                 DetailViewModels.Remove(detailViewModel);
             }
-
         }
+
 
     }
 

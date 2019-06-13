@@ -8,7 +8,7 @@ namespace Purchase.UI.ViewModel
 {
     public interface IDetailViewModel
     {
-        Task LoadAsync(int? ID);
+        Task LoadAsync(int ID);
         bool HasChanges { get; }
         int Id { get; }
     }

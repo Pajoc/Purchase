@@ -3,6 +3,7 @@ using Purchase.Model;
 using System.Threading.Tasks;
 using System.Data.Entity;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Purchase.UI.Data.Repositories
 {
@@ -27,6 +28,17 @@ namespace Purchase.UI.Data.Repositories
             //    .ToListAsync();
 
             return await Context.Suppliers.ToListAsync();
+        }
+
+        public async Task ReloadSupplierAsync(int supplierId)
+        {
+            var dbEntityEntry = Context.ChangeTracker.Entries<Supplier>()
+                .SingleOrDefault(db => db.Entity.Id == supplierId);
+
+            if (dbEntityEntry != null)
+            {
+                await dbEntityEntry.ReloadAsync();
+            }
         }
     }
 }

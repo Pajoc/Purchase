@@ -2,6 +2,7 @@
 using Prism.Events;
 using Purchase.Model;
 using Purchase.UI.Data.Repositories;
+using Purchase.UI.Event;
 using Purchase.UI.View.Services;
 using Purchase.UI.Wrapper;
 using System;
@@ -17,17 +18,19 @@ namespace Purchase.UI.ViewModel
     public class MeetingDetailViewModel : DetailViewModelBase, IMeetingDetailViewModel
     {
         private IMeetingRepository _meetingRepository;
-        private IMessageDialogService _messageDialogService;
+        //private IMessageDialogService _messageDialogService;
         private MeetingWrapper _meeting;
         private Supplier _selectedAvailableSupplier;
         private Supplier _selectedAddedSupplier;
         private List<Supplier> _allSuppliers;
 
         public MeetingDetailViewModel(IEventAggregator eventAggregator, IMessageDialogService messageDialogService,
-            IMeetingRepository meetingRepository) : base(eventAggregator)
+            IMeetingRepository meetingRepository) : base(eventAggregator, messageDialogService)
         {
             _meetingRepository = meetingRepository;
-            _messageDialogService = messageDialogService;
+
+            eventAggregator.GetEvent<AfterDetailSavedEvent>().Subscribe(AfterDetailSaved);
+            eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted);
 
             AddedSuppliers = new ObservableCollection<Supplier>();
             AvailableSuppliers = new ObservableCollection<Supplier>();
@@ -36,7 +39,7 @@ namespace Purchase.UI.ViewModel
 
         }
 
-        
+       
         public MeetingWrapper Meeting
         {
             get { return _meeting;}
@@ -81,11 +84,11 @@ namespace Purchase.UI.ViewModel
             }
         }
 
-        public override async Task LoadAsync(int? meetingId)
+        public override async Task LoadAsync(int meetingId)
         {
-            var meeting = meetingId.HasValue ? await _meetingRepository.GetByIdAsync(meetingId.Value) : CreateNewMeeting();
+            var meeting = meetingId > 0 ? await _meetingRepository.GetByIdAsync(meetingId) : CreateNewMeeting();
 
-            Id = meeting.Id;
+            Id = meetingId;
 
             InitializeMeeting(meeting);
 
@@ -109,6 +112,12 @@ namespace Purchase.UI.ViewModel
                 {
                     ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                 }
+
+                if (e.PropertyName == nameof (Meeting.Title))
+                {
+                    SetTitle();
+                }
+
             };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
 
@@ -116,9 +125,13 @@ namespace Purchase.UI.ViewModel
             {
                 Meeting.Title = "";
             }
-
+            SetTitle();
         }
 
+        private void SetTitle()
+        {
+            Title = Meeting.Title;
+        }
 
         private void SetupPicklist()
         {
@@ -154,7 +167,7 @@ namespace Purchase.UI.ViewModel
 
         protected async override void OnDeleteExecute()
         {
-            var result = _messageDialogService.ShowOkCancelDialog($"Do you really want to delete this meeting {Meeting.Title}?", "Question");
+            var result = MessageDialogService.ShowOkCancelDialog($"Do you really want to delete this meeting {Meeting.Title}?", "Question");
             if (result == MessageDialogResult.OK)
             {
                 _meetingRepository.Remove(Meeting.Model);
@@ -207,6 +220,28 @@ namespace Purchase.UI.ViewModel
             AvailableSuppliers.Remove(supplierToAdd);
             HasChanges = _meetingRepository.HasChanges();
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+        }
+
+
+        private async void AfterDetailSaved(AfterDetailSavedEventArgs args)
+        {
+            if (args.ViewModelName == nameof(SupplierDetailViewModel))
+            {
+                //força refresh
+                await _meetingRepository.ReloadSupplierAsync(args.Id);
+                _allSuppliers = await _meetingRepository.GetAllSuppliersAsync();
+                SetupPicklist();
+            }
+        }
+
+        private async void AfterDetailDeleted(AfterDetailDeletedEventArgs args)
+        {
+            if (args.ViewModelName == nameof(SupplierDetailViewModel))
+            {
+                //como é delete não precisa de refresh
+                _allSuppliers = await _meetingRepository.GetAllSuppliersAsync();
+                SetupPicklist();
+            }
         }
 
     }

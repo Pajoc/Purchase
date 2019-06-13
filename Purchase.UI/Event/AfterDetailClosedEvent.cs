@@ -2,15 +2,14 @@
 
 namespace Purchase.UI.Event
 {
-    public class OpenDtlViewEvent:PubSubEvent<OpenDtlViewEventArgs>
+    public class AfterDetailClosedEvent : PubSubEvent<AfterDetailClosedDeletedEventArgs>
     {
         
     }
 
-    public class OpenDtlViewEventArgs
+    public class AfterDetailClosedDeletedEventArgs
     {
         public int Id { get; set; }
         public string ViewModelName { get; set; }
-
     }
 }
