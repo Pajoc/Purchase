@@ -33,6 +33,9 @@ namespace Purchase.UI.ViewModel
             _supplierRepository = supplierRepository;
             _supplierTypeLookupDataService = supplierTypeLookupDataService;
 
+            eventAggregator.GetEvent<AfterCollectionSavedEvent>()
+                .Subscribe(AfterCollectionSaved);
+
             AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneNumberExecute);
             RemovePhoneNumberCommand = new DelegateCommand(OnRemovePhoneNumberExecute, OnRemovePhoneNumberCanExecute);
 
@@ -251,5 +254,13 @@ namespace Purchase.UI.ViewModel
             return supplier;
         }
 
+        private async void AfterCollectionSaved(AfterCollectionSavedEventArgs args)
+        {
+            if (args.ViewModelName == nameof(SupplierTypeDetailViewModel))
+            {
+                await LoadSupplierTypesLookupAsync();
+            }
+           
+        }
     }
 }

@@ -35,6 +35,7 @@ namespace Purchase.UI.ViewModel
             _eventAggregator.GetEvent<AfterDetailClosedEvent>().Subscribe(AfterDetailClosed);
 
             CreateNewDetailCommand = new DelegateCommand<Type>(OnCreateNewDetailExecute);
+            OpenSingleDetailViewCommand = new DelegateCommand<Type>(OnOpenSingleDetailViewExecute);
 
             NavigationViewModel = navigationViewModel;
         }
@@ -45,6 +46,8 @@ namespace Purchase.UI.ViewModel
         }
 
         public ICommand CreateNewDetailCommand { get; }
+
+        public ICommand OpenSingleDetailViewCommand { get; }
 
         //Os set são colocados diretamente no construtor
         public INavigationViewModel NavigationViewModel { get; }
@@ -110,6 +113,10 @@ namespace Purchase.UI.ViewModel
             OnOpenDetailView(new OpenDtlViewEventArgs { Id = nextNewItemId--, ViewModelName = viewModelType.Name });
         }
 
+        private void OnOpenSingleDetailViewExecute(Type viewModelType)
+        {
+            OnOpenDetailView(new OpenDtlViewEventArgs { Id = -1, ViewModelName = viewModelType.Name });
+        }
 
         private void AfterDetailDeleted(AfterDetailDeletedEventArgs args)
         {

@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Threading.Tasks;
 
 namespace Purchase.UI.Data.Repositories
@@ -17,6 +18,11 @@ namespace Purchase.UI.Data.Repositories
         public void Add(TEntity model)
         {
             Context.Set<TEntity>().Add(model);
+        }
+
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        {
+            return await Context.Set<TEntity>().ToListAsync();
         }
 
         public virtual async Task<TEntity> GetByIdAsync(int ID)

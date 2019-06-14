@@ -28,11 +28,13 @@ namespace Purchase.UI.Startup
             //builder.RegisterType<SupplierDetailViewModel>().As<ISupplierDetailViewModel>();
             builder.RegisterType<SupplierDetailViewModel>().Keyed<IDetailViewModel>(nameof(SupplierDetailViewModel));
             builder.RegisterType<MeetingDetailViewModel>().Keyed<IDetailViewModel>(nameof(MeetingDetailViewModel));
+            builder.RegisterType<SupplierTypeDetailViewModel>().Keyed<IDetailViewModel>(nameof(SupplierTypeDetailViewModel));
 
             //Vou ter mais que uma
             builder.RegisterType<LookupDataService>().AsImplementedInterfaces();
             builder.RegisterType<SupplierRepository>().As<ISupplierRepository>();
             builder.RegisterType<MeetingRepository>().As<IMeetingRepository>();
+            builder.RegisterType<SupplierTypeRepository>().As<ISupplierTypeRepository>();
 
 
             return builder.Build();

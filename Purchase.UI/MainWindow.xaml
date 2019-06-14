@@ -15,6 +15,10 @@
         <DataTemplate DataType="{x:Type viewModel:MeetingDetailViewModel}">
             <view:MeetingDetailView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModel:SupplierTypeDetailViewModel}">
+            <view:SupplierTypeDetailView/>
+        </DataTemplate>
+        
     </Window.Resources>
     
     <Grid>
@@ -33,6 +37,11 @@
                 <MenuItem Header="New Meeting" Command="{Binding CreateNewDetailCommand}"
                           CommandParameter="{x:Type viewModel:MeetingDetailViewModel}"/>
             </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Supplier types" Command="{Binding OpenSingleDetailViewCommand}"
+                          CommandParameter="{x:Type viewModel:SupplierTypeDetailViewModel}"/>
+            </MenuItem>
+
         </Menu>
         <!-- Bind to Navigation-->
         <view:NavigationView Grid.Row="1" DataContext="{Binding NavigationViewModel}"/>

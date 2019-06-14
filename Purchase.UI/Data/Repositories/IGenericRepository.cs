@@ -1,13 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Purchase.UI.Data.Repositories
 {
     public interface IGenericRepository<T>
     {
-        void Add(T model);
+        
         Task<T> GetByIdAsync(int ID);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task SaveAsync();
+
+        void Add(T model);
         bool HasChanges();
         void Remove(T model);
-        Task SaveAsync();
+        
     }
 }

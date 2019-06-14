@@ -29,6 +29,9 @@ namespace Purchase.Model
 
         public SupplierType TypeOfSupplier { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         public ICollection<SupplierPhoneNumber> PhoneNumbers { get; set; }
 
         public ICollection<Meeting> Meetings { get; set; }

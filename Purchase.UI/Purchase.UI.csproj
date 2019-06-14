@@ -91,8 +91,11 @@
     <Compile Include="Data\Repositories\IGenericRepository.cs" />
     <Compile Include="Data\Repositories\IMeetingRepository.cs" />
     <Compile Include="Data\Repositories\ISupplierRepository.cs" />
+    <Compile Include="Data\Repositories\ISupplierTypeRepository.cs" />
     <Compile Include="Data\Repositories\MeetingRepository.cs" />
     <Compile Include="Data\Repositories\SupplierRepository.cs" />
+    <Compile Include="Data\Repositories\SupplierTypeRepository.cs" />
+    <Compile Include="Event\AfterCollectionSavedEvent.cs" />
     <Compile Include="Event\AfterDetailClosedEvent.cs" />
     <Compile Include="Event\AfterDetailDeletedEvent.cs" />
     <Compile Include="Event\AfterDetailSavedEvent.cs" />
@@ -108,6 +111,7 @@
     <Compile Include="ViewModel\NavigationItemViewModel.cs" />
     <Compile Include="ViewModel\NavigationViewModel.cs" />
     <Compile Include="ViewModel\SupplierDetailViewModel.cs" />
+    <Compile Include="ViewModel\SupplierTypeDetailViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\MeetingDetailView.xaml.cs">
       <DependentUpon>MeetingDetailView.xaml</DependentUpon>
@@ -120,10 +124,14 @@
     <Compile Include="View\SupplierDetailView.xaml.cs">
       <DependentUpon>SupplierDetailView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\SupplierTypeDetailView.xaml.cs">
+      <DependentUpon>SupplierTypeDetailView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Wrapper\MeetingWrapper.cs" />
     <Compile Include="Wrapper\ModelWrapper.cs" />
     <Compile Include="Wrapper\NotifyDataErrorInfoBase.cs" />
     <Compile Include="Wrapper\SupplierPhoneNumberWrapper.cs" />
+    <Compile Include="Wrapper\SupplierTypeWrapper.cs" />
     <Compile Include="Wrapper\SupplierWrapper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -146,6 +154,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\SupplierDetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SupplierTypeDetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
