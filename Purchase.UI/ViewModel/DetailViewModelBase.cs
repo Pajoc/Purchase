@@ -3,9 +3,8 @@ using Prism.Events;
 using Purchase.UI.Event;
 using Purchase.UI.View.Services;
 using System;
-using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -117,6 +116,50 @@ namespace Purchase.UI.ViewModel
                     ViewModelName = this.GetType().Name
                 });
 
+        }
+
+        protected async Task SaveWithOptimisticConcurrencyAsync(Func<Task> saveFunc, Action afterSaveAction)
+        {
+            try
+            {
+                //await _supplierRepository.SaveAsync();
+                await saveFunc();
+
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                var databaseValues = ex.Entries.Single().GetDatabaseValues();
+
+                if (databaseValues == null)
+                {
+                    MessageDialogService.ShowInfoDialog("The entity has been deleted by another user");
+                    RaiseDetailDeletedEvent(Id);
+                    return;
+                }
+
+                var result = MessageDialogService.ShowOkCancelDialog("The entity has been changed in"
+                    + " the meantime by someone else. Click OK to save your changes anyway, click cancel to reload from the DB.", "Question");
+                if (result == MessageDialogResult.OK)
+                {
+                    // Update original values with database values (to get the rigth row version)
+                    var entry = ex.Entries.Single();
+                    entry.OriginalValues.SetValues(entry.GetDatabaseValues());
+                    await saveFunc();
+                }
+                else
+                {
+                    // Reload from db
+                    await ex.Entries.Single().ReloadAsync();
+                    await LoadAsync(Id);
+                }
+            };
+
+
+            //HasChanges = _supplierRepository.HasChanges();
+            //Id = Supplier.Id;
+            //RaiseDetailSavedEvent(Supplier.Id, Supplier.Name);
+            afterSaveAction();
+            
         }
     }
 }

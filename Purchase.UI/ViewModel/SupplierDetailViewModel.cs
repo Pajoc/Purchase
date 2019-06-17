@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -178,19 +179,13 @@ namespace Purchase.UI.ViewModel
 
         protected override async void OnSaveExecute()
         {
-            await _supplierRepository.SaveAsync();
-            HasChanges = _supplierRepository.HasChanges();
-            Id = Supplier.Id;
-
-            RaiseDetailSavedEvent(Supplier.Id, Supplier.Name);
-           // EventAggregator.GetEvent<AfterDetailSavedEvent>().Publish(
-           //     new AfterDetailSavedEventArgs
-           //     {
-           //         Id = _supplier.Id,
-           //         DisplayMember = _supplier.Name,
-           //         ViewModelName = nameof(SupplierDetailViewModel)
-           //     }
-           //);
+            await SaveWithOptimisticConcurrencyAsync(_supplierRepository.SaveAsync,
+                () =>
+            {
+                HasChanges = _supplierRepository.HasChanges();
+                Id = Supplier.Id;
+                RaiseDetailSavedEvent(Supplier.Id, Supplier.Name);
+            });
         }
 
         protected override bool OnSaveCanExecute()
