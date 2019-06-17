@@ -1,12 +1,11 @@
-﻿using Purchase.UI.ViewModel;
-using System;
-using System.Threading.Tasks;
+﻿using MahApps.Metro.Controls;
+using Purchase.UI.ViewModel;
 using System.Windows;
 
 namespace Purchase.UI
 {
 
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         private MainViewModel _viewModel;
 
