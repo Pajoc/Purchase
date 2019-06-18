@@ -197,12 +197,12 @@ namespace Purchase.UI.ViewModel
 
             if (await _supplierRepository.HasMeetingsAsync(Supplier.Id))
             {
-                MessageDialogService.ShowInfoDialog($"{Supplier.Name} can't be deleted while he is part exists of a meeting.");
+                await MessageDialogService.ShowInfoDialogAsync($"{Supplier.Name} can't be deleted while he is part exists of a meeting.");
                 return;
             }
 
 
-            var result = MessageDialogService.ShowOkCancelDialog($"Do you really want to delete this supplier {Supplier.Name}?", "Question");
+            var result = await MessageDialogService.ShowOkCancelDialogAsync($"Do you really want to delete this supplier {Supplier.Name}?", "Question");
             if (result == MessageDialogResult.OK)
             {
                 _supplierRepository.Remove(Supplier.Model);

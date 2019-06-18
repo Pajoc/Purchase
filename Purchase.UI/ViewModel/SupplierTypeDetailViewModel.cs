@@ -105,7 +105,7 @@ namespace Purchase.UI.ViewModel
                     ex = ex.InnerException;
                 }
 
-                MessageDialogService.ShowInfoDialog("Error while saving the entities, " +
+                await MessageDialogService.ShowInfoDialogAsync("Error while saving the entities, " +
                     "the data will be reloaded. Details: " + ex.Message);
                 await LoadAsync(Id);
             }
@@ -128,7 +128,7 @@ namespace Purchase.UI.ViewModel
                 await _supplierTypeRepository.IsReferencedBySupplierAsync(SelectedSupplierType.Id);
             if (isReferenced)
             {
-                MessageDialogService.ShowInfoDialog($"The type {SelectedSupplierType.Type} can't be removed, as it is referenced by at least on supplier.");
+                await MessageDialogService.ShowInfoDialogAsync($"The type {SelectedSupplierType.Type} can't be removed, as it is referenced by at least on supplier.");
                 return;
             }
 

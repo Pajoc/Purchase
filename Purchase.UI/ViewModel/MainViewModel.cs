@@ -14,7 +14,7 @@ namespace Purchase.UI.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private IEventAggregator _eventAggregator;
-        private IIndex<string, IDetailViewModel> _detailViewModelCreator;
+        private readonly IIndex<string, IDetailViewModel> _detailViewModelCreator;
         private IMessageDialogService _messageDialogService;
         private IDetailViewModel _selecteddetailViewModel;
 
@@ -105,7 +105,7 @@ namespace Purchase.UI.ViewModel
                 catch 
                 {
 
-                    _messageDialogService.ShowInfoDialog("Could not load the entity, " +
+                    await _messageDialogService.ShowInfoDialogAsync("Could not load the entity, " +
                         "maybe it was deleted in the meantime by another user. " +
                         "The navigation is refreshed for you.");
                     await NavigationViewModel.LoadAsync();

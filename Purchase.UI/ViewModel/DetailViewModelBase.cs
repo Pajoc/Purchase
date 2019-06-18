@@ -97,12 +97,12 @@ namespace Purchase.UI.ViewModel
                 });
         }
 
-        protected virtual void OnCloseDetailViewExecute()
+        protected async virtual void OnCloseDetailViewExecute()
         {
 
             if (HasChanges)
             {
-                var result = MessageDialogService.ShowOkCancelDialog("You've made changes. Close this item?", "Question");
+                var result = await MessageDialogService.ShowOkCancelDialogAsync("You've made changes. Close this item?", "Question");
                 if (result == MessageDialogResult.Cancel)
                 {
                     return;
@@ -132,12 +132,12 @@ namespace Purchase.UI.ViewModel
 
                 if (databaseValues == null)
                 {
-                    MessageDialogService.ShowInfoDialog("The entity has been deleted by another user");
+                    await MessageDialogService.ShowInfoDialogAsync("The entity has been deleted by another user");
                     RaiseDetailDeletedEvent(Id);
                     return;
                 }
 
-                var result = MessageDialogService.ShowOkCancelDialog("The entity has been changed in"
+                var result = await MessageDialogService.ShowOkCancelDialogAsync("The entity has been changed in"
                     + " the meantime by someone else. Click OK to save your changes anyway, click cancel to reload from the DB.", "Question");
                 if (result == MessageDialogResult.OK)
                 {
